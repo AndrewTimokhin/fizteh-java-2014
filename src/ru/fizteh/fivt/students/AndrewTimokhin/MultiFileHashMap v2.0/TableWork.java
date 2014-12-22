@@ -1,6 +1,7 @@
-package ru.fizteh.fivt.students.AndrewTimokhin.MultiFileHashMap;
+package ru;
 
 import java.io.*;
+import java.security.AccessControlException;
 import java.util.*;
 
 public class TableWork {
@@ -72,7 +73,7 @@ public class TableWork {
 
 				temp[t.length] = new TableDriver(tableToAdd);
 				t = temp;
-				System.out.println("created");
+				// System.out.println("created");
 			}
 		}
 
@@ -118,10 +119,13 @@ public class TableWork {
 				if (st != null) {
 					for (String time : st) {
 						if (time.equals(tableToDel)) {
+							try {
+								in = new File(homeDir + "\\" + tableToDel);
 
-							in = new File(homeDir + "\\" + tableToDel);
-
-							remove(in);
+								remove(in);
+							} catch (AccessControlException e) {
+								System.out.println("Access forbidden!");
+							}
 
 						}
 
