@@ -1,4 +1,4 @@
-package ru.fizteh.fivt.students.AndrewTimokhin.MultiFileHashMap;
+package ru;
 
 import java.util.*;
 import java.io.*;
