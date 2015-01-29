@@ -15,11 +15,12 @@ public interface Table {
      * @param key
      *            Ключ.
      * @return Значение. Если не найдено, возвращает null.
+     * @throws KeyNullAndNotFound
      *
      * @throws IllegalArgumentException
      *             Если значение параметра key является null.
      */
-    String get(String key);
+    String get(String key) throws IllegalArgumentException, KeyNullAndNotFound;
 
     /**
      * Устанавливает значение по указанному ключу.

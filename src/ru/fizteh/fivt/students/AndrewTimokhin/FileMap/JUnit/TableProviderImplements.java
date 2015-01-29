@@ -33,18 +33,20 @@ public class TableProviderImplements implements TableProvider {
                                                                          // по
                                                                          // ее
                                                                          // имени
-        if (name == null)
-            throw new IllegalArgumentException("Error in getTable-meth"); // вырабатывает
-                                                                          // исключение,
-                                                                          // если
-                                                                          // имя
-                                                                          // таблицы
-                                                                          // задано
-                                                                          // некорректно
+        if (name == null) {
+            throw new IllegalArgumentException("Error in getTable-meth");
+        } // вырабатывает
+          // исключение,
+          // если
+          // имя
+          // таблицы
+          // задано
+          // некорректно
         if (t != null) {
             for (int i = 0; i < t.length; i++) {
-                if (t[i].getName().equals(name))
-                    return t[i]; // возврат таблицы, если такая существует
+                if (t[i].getName().equals(name)) {
+                    return t[i];
+                }// возврат таблицы, если такая существует
 
             }
         }
@@ -58,14 +60,15 @@ public class TableProviderImplements implements TableProvider {
                                                                             // с
                                                                             // указанным
                                                                             // именем
-        if (name == null)
-            throw new IllegalArgumentException("Error in createTable-meth"); // вырабатывает
-                                                                             // исключение,
-                                                                             // если
-                                                                             // имя
-                                                                             // таблицы
-                                                                             // задано
-                                                                             // некорректно
+        if (name == null) {
+            throw new IllegalArgumentException("Error in createTable-meth");
+        } // вырабатывает
+          // исключение,
+          // если
+          // имя
+          // таблицы
+          // задано
+          // некорректно
         if (t != null) {
             for (int i = 0; i < t.length; i++) {
                 if (name.equals(t[i].getName())) {
@@ -99,14 +102,15 @@ public class TableProviderImplements implements TableProvider {
             IllegalStateException { // удаление таблицы с указанным именем,
                                     // возможна
         // выроботка двух видов исключений
-        if (name == null)
-            throw new IllegalArgumentException("Error in removeTable-meth"); // если
-                                                                             // название
-                                                                             // таблицы
-                                                                             // неверно,
-                                                                             // тогда
-                                                                             // возбуждает
-                                                                             // исключение
+        if (name == null) {
+            throw new IllegalArgumentException("Error in removeTable-meth");
+        }// если
+         // название
+         // таблицы
+         // неверно,
+         // тогда
+         // возбуждает
+         // исключение
         if (t != null) {
             for (int i = 0; i < t.length; i++) { // использует алгоритм
                                                  // копирования с пропусками

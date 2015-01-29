@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Test;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 
 import org.junit.After;
 import org.junit.AfterClass;

@@ -3,7 +3,7 @@
  * Данные тесты в полном объеме проверяют функциональность
  * соответствующего класса, включая граничные случаи
  */
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Test;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 
 import java.io.IOException;
 import java.util.HashMap;

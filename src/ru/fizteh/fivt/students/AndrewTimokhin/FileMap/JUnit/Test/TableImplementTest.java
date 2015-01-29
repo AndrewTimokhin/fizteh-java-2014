@@ -2,7 +2,7 @@
  * Модульные тесты базы данных.
  * 
  */
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Test;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 
 import java.util.List;
 import org.junit.After;

@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 
-import javax.naming.ldap.Rdn;
-
 /**
  * Класс @class Reader отвечает за физическое чтение данных с жесткого диска или
  * другого физического носителя информации.
@@ -31,13 +29,14 @@ public class Reader {
         Vector<TableImplement> agregat = new Vector<TableImplement>();
         int validator = 0;
         File testDir = new File(path);
-        if (testDir.list() != null)
+        if (testDir.list() != null) {
             for (String time : testDir.list()) {
                 File checkDir = new File(path + "\\" + time);
-                
+
                 if (checkDir.isDirectory()) {
                     validator++;
                     TableImplement database = new TableImplement(time, tp.dir);
+                    agregat.add(database);
                     for (i = 0; i < 16; i++) { // сканируеться максимально
                                                // возможное число директорий =
                                                // 16
@@ -77,7 +76,7 @@ public class Reader {
                                                         .readChar());
 
                                             }
- 
+
                                             database.map.put(
                                                     keyBuilder.toString(), // добавление
                                                                            // ключа/значения
@@ -113,21 +112,23 @@ public class Reader {
                         }
                     }
 
-                    agregat.add(database);
-
                 }
 
             }
- 
-        if (validator == 0)
-            return; // загружаем ранее сохраненные базы данных в нашу базу
-                    // данных
+        }
+        if (validator == 0) {
+            return;
+        }// загружаем ранее сохраненные базы данных в нашу базу
+         // данных
+
         TableImplement[] copy = new TableImplement[agregat.size()];
         i = 0;
         Iterator<TableImplement> it = agregat.iterator();
+
         while (it.hasNext()) {
 
             copy[i] = it.next();
+            i++;
         }
         tp.t = copy;
         return;

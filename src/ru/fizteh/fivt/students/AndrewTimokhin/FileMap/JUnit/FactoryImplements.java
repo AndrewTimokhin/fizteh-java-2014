@@ -14,17 +14,12 @@ public class FactoryImplements implements TableProviderFactory {
 
     @Override
     public TableProvider create(String dir) {
-        if (dir == null)
-            throw new IllegalArgumentException("Error in create-meth."); // если
-                                                                         // в
-                                                                         // параметрах
-                                                                         // указана
-        // неверный путь к директории,
-        // генерируется исключение
+        if (dir == null) {
+            throw new IllegalArgumentException("Error in create-meth.");
+        }
+        // then, generate exception
         try {
-            return new TableProviderImplements(dir); // иначе, предпринимаеться
-                                                     // попытка по созданию
-            // провайдера базы данных
+            return new TableProviderImplements(dir);
         } catch (IOException e) {
             // do nothing
         }

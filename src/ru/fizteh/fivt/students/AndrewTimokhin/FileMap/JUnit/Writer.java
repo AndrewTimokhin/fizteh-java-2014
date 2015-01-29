@@ -4,7 +4,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,7 +25,7 @@ public class Writer {
     void createDir(String path) {
         File time = new File(path);
         time.mkdir();
-        //System.out.println(path);
+        // System.out.println(path);
         return;
     }
 
@@ -36,7 +35,7 @@ public class Writer {
 
         File prepareToMakeDir = new File(time.getParent().toString());
         prepareToMakeDir.mkdirs();
-        //System.out.println(prepareToMakeDir.getAbsolutePath());
+        // System.out.println(prepareToMakeDir.getAbsolutePath());
         time.createNewFile();
         return;
     }
@@ -50,13 +49,15 @@ public class Writer {
                 deleteDirectory(f);
             }
             dir.delete();
-        } else
+        } else {
             dir.delete();
+        }
     }
 
     public int abs(int digital) {
-        if (digital < 0)
+        if (digital < 0) {
             return -digital;
+        }
         return digital;
     }
 
@@ -65,7 +66,7 @@ public class Writer {
         this.deleteDirectory(new File(tp.dir));
         File fl = new File(tp.dir);
         fl.mkdir();
-        if (tp.t != null)
+        if (tp.t != null) {
             for (TableImplement ti : tp.t) {
                 File db = new File(tp.dir + "\\" + ti.name);
                 db.mkdir();
@@ -79,14 +80,15 @@ public class Writer {
                                                                // записи
                         String localPath = tp.dir + "\\" + ti.name + "\\"
                                 + dirToWrite.toString() + ".dir";
-                        if (this.checkDir(localPath) == false)
+                        if (!this.checkDir(localPath)) {
                             this.createDir(localPath);
+                        }
                         dirToWrite = new Integer(abs(ti.map.get(keyFind)
                                 .hashCode() % 16 % 16)); // номер файла для
                                                          // записи
                         String localfile = localPath + "\\"
                                 + dirToWrite.toString();
-                        if (this.checkDir(localfile) == false) {
+                        if (!this.checkDir(localfile)) {
                             this.createFile(localfile);
                         }
                         DataOutputStream out = new DataOutputStream(
@@ -100,6 +102,7 @@ public class Writer {
 
                 }
             }
+        }
         return;
     }
 
