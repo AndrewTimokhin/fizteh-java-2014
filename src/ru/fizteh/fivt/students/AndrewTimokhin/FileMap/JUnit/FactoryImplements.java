@@ -3,9 +3,9 @@ package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 import java.io.IOException;
 
 /**
- * РљР»Р°СЃСЃ @class FactoryImplements РѕС‚РІРµС‡Р°РµС‚ Р·Р° С„Р°Р±СЂРёРєСѓ РїРѕ СЃРѕР·РґР°РЅРёСЋ С‚Р°Р±Р»РёС†.
- * РРјРїР»РёРјРµРЅС‚РёСЂСѓСЏ РёРЅС‚РµСЂС„РµР№СЃ TableProviderFactory, РїРµСЂРµРѕРїСЂРµРґРµР»СЏРµС‚ РјРµС‚РѕРґ РїРѕ
- * СЃРѕР·РґР°РЅРёСЋ РїСЂРѕРІР°Р№РґРµСЂР° Р±Р°Р·С‹ РґР°РЅРЅС‹С….
+ * Класс @class FactoryImplements отвечает за фабрику по созданию таблиц.
+ * Имплиментируя интерфейс TableProviderFactory, переопределяет метод по
+ * созданию провайдера базы данных.
  *
  * @author Timokhin Andrew
  */
@@ -17,11 +17,10 @@ public class FactoryImplements implements TableProviderFactory {
         if (dir == null) {
             throw new IllegalArgumentException("Error in create-meth.");
         }
-        // then, generate exception
         try {
             return new TableProviderImplements(dir);
-        } catch (IOException e) {
-            // do nothing
+        } catch (IOException xcpt) {
+            System.out.println(xcpt.toString());
         }
         return null;
     }

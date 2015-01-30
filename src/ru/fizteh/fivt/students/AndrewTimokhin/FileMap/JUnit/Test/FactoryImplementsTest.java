@@ -30,8 +30,8 @@ public class FactoryImplementsTest {
     @Test
     public void testCreate() throws IOException {
         TableProviderImplements resultOne = (TableProviderImplements) new FactoryImplements()
-                .create("C:\\DataBase");
-        assertEquals("C:\\DataBase", resultOne.dir);
+                .create("test");
+        assertEquals("test", resultOne.dir);
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -14,6 +14,8 @@ import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import java.lang.IllegalArgumentException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,13 +32,13 @@ public class TableImplementTest {
     @Before
     public void setUp() {
         TableProviderFactory tpv = new FactoryImplements();
-        path = tmp.newFolder("C:\\time").getAbsolutePath();
+        path = tmp.newFolder("time").getAbsolutePath();
         tp = tpv.create(path);
         tb = tp.createTable("testing");
 
         FactoryImplements tb = new FactoryImplements();
         TableProviderImplements tp = (TableProviderImplements) tb
-                .create("C:\\DataBase");
+                .create("test");
         Table time = tp.createTable("new");
         time = tp.getTable("new");
 
@@ -72,14 +74,6 @@ public class TableImplementTest {
         tb.remove("1");
         result = tb.size();
         assertEquals(0, result);
-    }
-
-    /**
-     * Test of get method
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testGet() {
-        tb.get(null);
     }
 
     /**
@@ -134,7 +128,13 @@ public class TableImplementTest {
         tb.put(key, value);
 
         assertEquals(value, tb.remove(key));
-        assertNull(tb.get(key));
+        try {
+            assertNull(tb.get(key));
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(TableImplementTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyNullAndNotFound ex) {
+            Logger.getLogger(TableImplementTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Test
@@ -184,7 +184,6 @@ public class TableImplementTest {
         tb.put("id123", "766");
         tb.commit();
         tb.rollback();
-
     }
 
     @Test
@@ -197,6 +196,48 @@ public class TableImplementTest {
         tb.put("54", "54");
         tb.commit();
         assertEquals(2, tb.rollback());
+    }
+    
+     @Test
+    public void testCommitCheckRollbackCheck() throws IllegalArgumentException, KeyNullAndNotFound {
+        tb.put("1", "11");
+        tb.put("2", "22");
+        tb.put("3", "33");
+        tb.commit();
+        assertEquals("11", tb.get("1"));
+        assertEquals("22", tb.get("2"));
+        assertEquals("33", tb.get("3"));
+        tb.put("4", "44");
+        tb.put("5", "55");
+        tb.commit();
+        assertEquals("44", tb.get("4"));
+        assertEquals("55", tb.get("5"));
+        tb.rollback();
+        assertEquals(null, tb.get("4"));
+        assertEquals(null, tb.get("5"));
+        assertEquals("33", tb.get("3"));
+        assertEquals(3, tb.size());
+
+    }
+
+     @Test
+    public void testCommitCheckChangesRollbackCheck() throws IllegalArgumentException, KeyNullAndNotFound {
+        tb.put("1", "11");
+        tb.put("2", "22");
+        tb.put("3", "33");
+        tb.commit();
+        assertEquals("11", tb.get("1"));
+        assertEquals("22", tb.get("2"));
+        assertEquals("33", tb.get("3"));
+        tb.put("4", "44");
+        tb.put("5", "55");
+        assertEquals("11", tb.remove("1"));
+        assertEquals("22", tb.remove("2"));
+        assertEquals(null, tb.remove("66"));
+        tb.commit();
+        tb.rollback();
+        assertEquals("11", tb.get("1"));
+        assertEquals(3, tb.size());
 
     }
 

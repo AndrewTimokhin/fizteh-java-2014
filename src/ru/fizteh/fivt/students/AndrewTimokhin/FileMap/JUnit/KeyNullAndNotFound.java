@@ -1,13 +1,9 @@
 package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 
+@SuppressWarnings("serial")
 public class KeyNullAndNotFound extends Exception {
-    private String description;
-
     public KeyNullAndNotFound(String description) {
-        this.description = description;
+        super(description);
     }
 
-    public String toString() {
-        return "key was not found because it is null!";
-    }
 }

@@ -5,11 +5,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Set;
+import static java.lang.Math.abs;
 
 /**
- * РљР»Р°СЃСЃ @class Writer РѕС‚РІРµС‡Р°РµС‚ Р·Р° С„РёР·РёС‡РµСЃРєСѓСЋ Р·Р°РїРёСЃСЊ РёРЅС„РѕСЂРјР°С†РёРё СЃ РЅР° Р¶РµСЃС‚РєРёР№
- * РґРёСЃРє РёР»Рё РґСЂСѓРіРѕР№ РЅРѕСЃРёС‚РµР»СЊ РёРЅС„РѕСЂРјР°С†РёРё. Р›РѕРіРёРєР° СЂР°Р±РѕС‚С‹ СѓСЃС‚РѕР№С‡РёРІР° Рє РЅРѕРІС‹Рј РїР°РїРєР°Рј Рё
- * С‚.Рґ.
+ * Класс @class Writer отвечает за физическую запись информации с на жесткий
+ * диск или другой носитель информации. Логика работы устойчива к новым папкам и
+ * т.д.
  *
  * @author Timokhin Andrew
  */
@@ -17,26 +18,26 @@ import java.util.Set;
 public class Writer {
 
     boolean checkDir(String name) {
-        File time = new File(name);
-        return time.exists();
+        File tmpFile = new File(name);
+        return tmpFile.exists();
 
     }
 
     void createDir(String path) {
-        File time = new File(path);
-        time.mkdir();
+        File tmpDir = new File(path);
+        tmpDir.mkdir();
         // System.out.println(path);
         return;
     }
 
     void createFile(String path) throws IOException {
 
-        File time = new File(path);
+        File tmpFile = new File(path);
 
-        File prepareToMakeDir = new File(time.getParent().toString());
+        File prepareToMakeDir = new File(tmpFile.getParent().toString());
         prepareToMakeDir.mkdirs();
         // System.out.println(prepareToMakeDir.getAbsolutePath());
-        time.createNewFile();
+        tmpFile.createNewFile();
         return;
     }
 
@@ -45,8 +46,8 @@ public class Writer {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             for (int i = 0; i < children.length; i++) {
-                File f = new File(dir, children[i]);
-                deleteDirectory(f);
+                File tmpFile = new File(dir, children[i]);
+                deleteDirectory(tmpFile);
             }
             dir.delete();
         } else {
@@ -54,50 +55,42 @@ public class Writer {
         }
     }
 
-    public int abs(int digital) {
-        if (digital < 0) {
-            return -digital;
-        }
-        return digital;
-    }
-
     public void write(TableProviderImplements tp) throws IOException {
 
         this.deleteDirectory(new File(tp.dir));
-        File fl = new File(tp.dir);
-        fl.mkdir();
-        if (tp.t != null) {
-            for (TableImplement ti : tp.t) {
-                File db = new File(tp.dir + "\\" + ti.name);
-                db.mkdir();
-                if (ti.map != null) {
+        File baseDir = new File(tp.dir);
+        baseDir.mkdir();
+        if (tp.collection != null) {
+            for (TableImplement ti : tp.collection) {
+                File dataBaseDir = new File(tp.dir + "\\" + ti.getName());
+                dataBaseDir.mkdir();
+                if (ti.getMap() != null) {
                     Set<String> keyList;
-                    keyList = ti.map.keySet();
+                    keyList = ti.getMap().keySet();
                     for (String keyFind : keyList) {
                         Integer dirToWrite = new Integer(
-                                abs(keyFind.hashCode() % 16)); // РЅРѕРјРµСЂ
-                                                               // РґРёСЂРµРєС‚РѕСЂРёРё РґР»СЏ
-                                                               // Р·Р°РїРёСЃРё
-                        String localPath = tp.dir + "\\" + ti.name + "\\"
+                                abs(keyFind.hashCode() % 16));
+                        String localPath = tp.dir + "\\" + ti.getName() + "\\"
                                 + dirToWrite.toString() + ".dir";
                         if (!this.checkDir(localPath)) {
                             this.createDir(localPath);
                         }
-                        dirToWrite = new Integer(abs(ti.map.get(keyFind)
-                                .hashCode() % 16 % 16)); // РЅРѕРјРµСЂ С„Р°Р№Р»Р° РґР»СЏ
-                                                         // Р·Р°РїРёСЃРё
-                        String localfile = localPath + "\\"
+                        dirToWrite = new Integer(abs(ti.getMap().get(keyFind)
+                                .hashCode() % 16 % 16));
+                        String localFile = localPath + "\\"
                                 + dirToWrite.toString();
-                        if (!this.checkDir(localfile)) {
-                            this.createFile(localfile);
+                        if (!this.checkDir(localFile)) {
+                            this.createFile(localFile);
                         }
-                        DataOutputStream out = new DataOutputStream(
-                                new FileOutputStream(localfile));
-                        out.writeInt(keyFind.length());
-                        out.writeChars(keyFind);
-                        out.writeInt(ti.map.get(keyFind).length());
-                        out.writeChars(ti.map.get(keyFind));
-                        out.close();
+                        DataOutputStream outStream = new DataOutputStream(
+                                new FileOutputStream(localFile));
+                        outStream.writeInt(keyFind.length());
+                        outStream.writeChars(keyFind);
+                        outStream.writeInt(ti.getMap().get(keyFind).toString()
+                                .length());
+                        outStream.writeChars(ti.getMap().get(keyFind)
+                                .toString());
+                        outStream.close();
                     }
 
                 }

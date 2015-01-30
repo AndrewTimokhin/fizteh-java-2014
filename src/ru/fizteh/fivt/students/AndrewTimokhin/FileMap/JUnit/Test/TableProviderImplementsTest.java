@@ -80,9 +80,7 @@ public class TableProviderImplementsTest {
 
     @Test(expected = IllegalStateException.class)
     public void testRemoveTableDnExist() {
-
-        tp.removeTable("test");
-
+        tp.removeTable("notexist");
     }
 
     @Test
@@ -90,7 +88,5 @@ public class TableProviderImplementsTest {
         tp.createTable("test");
         tp.removeTable("test");
         assertNull(tp.getTable("test"));
-
     }
-
 }

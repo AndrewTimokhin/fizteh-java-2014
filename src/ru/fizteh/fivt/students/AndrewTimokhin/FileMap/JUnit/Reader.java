@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.Vector;
 
 /**
- * Класс @class Reader отвечает за физическое чтение данных с жесткого диска или
- * другого физического носителя информации.
+ * ����� @class Reader �������� �� ���������� ������ ������ � �������� ����� ���
+ * ������� ����������� �������� ����������.
  * 
  *
  * @author Timokhin Andrew
@@ -20,12 +20,10 @@ import java.util.Vector;
 public class Reader {
     public void read(TableProviderImplements tp) throws IOException {
         int i;
-        StringBuilder keyBuilder = new StringBuilder(); // буфер для чтения
-                                                        // ключей
-        StringBuilder valueBuilder = new StringBuilder(); // буфер для чтения
-                                                          // значений
-        int length; // длина ключа/значения
-        String path = tp.dir; // корень хранилища
+        StringBuilder keyBuilder = new StringBuilder();
+        StringBuilder valueBuilder = new StringBuilder();
+        int length;
+        String path = tp.dir;
         Vector<TableImplement> agregat = new Vector<TableImplement>();
         int validator = 0;
         File testDir = new File(path);
@@ -35,11 +33,9 @@ public class Reader {
 
                 if (checkDir.isDirectory()) {
                     validator++;
-                    TableImplement database = new TableImplement(time, tp.dir);
-                    agregat.add(database);
-                    for (i = 0; i < 16; i++) { // сканируеться максимально
-                                               // возможное число директорий =
-                                               // 16
+                    TableImplement dataBase = new TableImplement(time, tp.dir);
+                    agregat.add(dataBase);
+                    for (i = 0; i < 16; i++) {
                         Integer numberDir = new Integer(i);
                         File locDB = new File(path + "\\" + time + "\\"
                                 + numberDir.toString() + ".dir");
@@ -54,48 +50,29 @@ public class Reader {
                                     while (true) {
 
                                         try {
-                                            length = rd.readInt(); // на 1 шаге
-                                                                   // алгоритм
-                                                                   // считывает
-                                                                   // размер
-                                                                   // ключа
-                                            for (int k = 0; k < length; k++) { // читается
-                                                                               // ключ
+                                            length = rd.readInt();
+                                            for (int k = 0; k < length; k++) {
                                                 keyBuilder
                                                         .append(rd.readChar());
 
                                             }
-                                            length = rd.readInt(); // на 2 шаге
-                                                                   // алгоритм
-                                                                   // считывает
-                                                                   // размер
-                                                                   // значения
-                                            for (int k = 0; k < length; k++) { // считывается
-                                                                               // значение
+                                            length = rd.readInt();
+                                            for (int k = 0; k < length; k++) {
                                                 valueBuilder.append(rd
                                                         .readChar());
 
                                             }
 
-                                            database.map.put(
-                                                    keyBuilder.toString(), // добавление
-                                                                           // ключа/значения
-                                                                           // в
-                                                                           // карту
+                                            dataBase.getMap().put(
+                                                    keyBuilder.toString(),
                                                     valueBuilder.toString());
-                                            database.backup.put(
+                                            dataBase.getBackup().put(
                                                     keyBuilder.toString(),
                                                     valueBuilder.toString());
                                             keyBuilder.replace(0,
-                                                    keyBuilder.length(), // сохранение
-                                                                         // начальных
-                                                                         // данных
-                                                                         // в
-                                                                         // бэкап
-                                                    "");
+                                                    keyBuilder.length(), "");
                                             valueBuilder.replace(0,
-                                                    valueBuilder.length(), ""); // сброс
-                                                                                // буфера
+                                                    valueBuilder.length(), "");
                                         } catch (EOFException e) {
 
                                             break;
@@ -103,8 +80,8 @@ public class Reader {
 
                                     }
 
-                                } catch (FileNotFoundException e) {
-                                    // do nothing
+                                } catch (FileNotFoundException fnfe) {
+                                    System.out.println(fnfe.toString());
 
                                 }
 
@@ -118,9 +95,7 @@ public class Reader {
         }
         if (validator == 0) {
             return;
-        }// загружаем ранее сохраненные базы данных в нашу базу
-         // данных
-
+        }
         TableImplement[] copy = new TableImplement[agregat.size()];
         i = 0;
         Iterator<TableImplement> it = agregat.iterator();
@@ -130,7 +105,7 @@ public class Reader {
             copy[i] = it.next();
             i++;
         }
-        tp.t = copy;
+        tp.collection = copy;
         return;
 
     }
