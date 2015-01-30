@@ -3,9 +3,9 @@ package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 import java.io.IOException;
 
 /**
- * Класс @class FactoryImplements отвечает за фабрику по созданию таблиц.
- * Имплиментируя интерфейс TableProviderFactory, переопределяет метод по
- * созданию провайдера базы данных.
+ * РљР»Р°СЃСЃ @class FactoryImplements РѕС‚РІРµС‡Р°РµС‚ Р·Р° С„Р°Р±СЂРёРєСѓ РїРѕ СЃРѕР·РґР°РЅРёСЋ С‚Р°Р±Р»РёС†.
+ * РРјРїР»РёРјРµРЅС‚РёСЂСѓСЏ РёРЅС‚РµСЂС„РµР№СЃ TableProviderFactory, РїРµСЂРµРѕРїСЂРµРґРµР»СЏРµС‚ РјРµС‚РѕРґ РїРѕ
+ * СЃРѕР·РґР°РЅРёСЋ РїСЂРѕРІР°Р№РґРµСЂР° Р±Р°Р·С‹ РґР°РЅРЅС‹С….
  *
  * @author Timokhin Andrew
  */
