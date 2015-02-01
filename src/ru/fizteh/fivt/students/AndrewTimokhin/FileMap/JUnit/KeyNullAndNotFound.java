@@ -5,5 +5,4 @@ public class KeyNullAndNotFound extends Exception {
     public KeyNullAndNotFound(String description) {
         super(description);
     }
-
 }

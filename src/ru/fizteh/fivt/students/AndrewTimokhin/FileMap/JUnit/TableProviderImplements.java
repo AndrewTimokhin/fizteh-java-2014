@@ -1,46 +1,55 @@
 package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Класс @class TableProviderImplements содержит логику по работе провайдера
- * базы данных. В нем переопределены все методы, заявленные в интерфейсе
- * TableProvider
- * 
  * @author Timokhin Andrew
  */
 
 public class TableProviderImplements implements TableProvider {
 
-    @SuppressWarnings("rawtypes")
-    public TableImplement[] collection;
+    public static void deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                File f = new File(dir, children[i]);
+                deleteDir(f);
+            }
+            dir.delete();
+        } else
+            dir.delete();
+    }
+
+    protected Map<String, TableImplement> collection;
     public final String dir;
 
     TableProviderImplements(String dir) throws IOException {
         this.dir = dir;
-        collection = null;
+        collection = new HashMap<>();
         Reader rd = new Reader();
         rd.read(this);
     }
 
-    public void writer() throws IOException {
-        Writer writer = new Writer();
-        writer.write(this);
+    public void write() throws IOException {
+        Writer writeToFileSystem = new Writer();
+        writeToFileSystem.write(this);
     }
 
     @Override
     public Table getTable(String name) throws IllegalArgumentException {
         if (name == null) {
-            throw new IllegalArgumentException("Error in getTable-meth");
+            throw new IllegalArgumentException(
+                    "Info: Name of DataBase is null. Please, enter correct name");
         }
-        if (collection != null) {
-            for (int i = 0; i < collection.length; i++) {
-                if (collection[i].getName().equals(name)) {
-                    return collection[i];
-                }
-
-            }
+        if (collection != null) { // if database is created now
+            if (collection.containsKey(name))
+                return collection.get(name);
         }
         return null;
     }
@@ -48,27 +57,21 @@ public class TableProviderImplements implements TableProvider {
     @Override
     public Table createTable(String name) throws IllegalArgumentException {
         if (name == null) {
-            throw new IllegalArgumentException("Error in createTable-meth");
+            throw new IllegalArgumentException(
+                    "Info: Name of DataBase is null. Please, enter correct name");
         }
         if (collection != null) {
-            for (int i = 0; i < collection.length; i++) {
-                if (name.equals(collection[i].getName())) {
-                    return null;
-                }
-            }
+            if (collection.containsKey(name))
+                return null;
             {
-                TableImplement[] temp = new TableImplement[collection.length + 1];
-                System.arraycopy(collection, 0, temp, 0, collection.length);
-                temp[collection.length] = new TableImplement(name, dir);
-                collection = temp;
-                return collection[collection.length - 1];
+                collection.put(name, new TableImplement(name, dir));
+                return collection.get(name);
             }
         }
-
         if (collection == null) {
-            collection = new TableImplement[1];
-            collection[0] = new TableImplement(name, dir);
-            return collection[0];
+            collection = new HashMap<>();
+            collection.put(name, new TableImplement(name, dir));
+            return collection.get(name);
         }
         return null;
     }
@@ -77,27 +80,20 @@ public class TableProviderImplements implements TableProvider {
     public void removeTable(String name) throws IllegalArgumentException,
             IllegalStateException {
         if (name == null) {
-            throw new IllegalArgumentException("Error in removeTable-meth");
+            throw new IllegalArgumentException(
+                    "Info: Name of DataBase is null. Please, enter correct name");
         }
         if (collection != null) {
-            for (int i = 0; i < collection.length; i++) {
-                if (collection[i].getName().equals(name)) {
-                    collection[i].setBackup(null);
-                    collection[i].setMap(null);
-                    collection[i].setName(null);
-                    TableImplement[] temp = new TableImplement[collection.length - 1];
-                    System.arraycopy(collection, 0, temp, 0, i);
-                    if (i < collection.length) {
-                        System.arraycopy(collection, i + 1, temp, i,
-                                collection.length - i - 1);
-                    }
-                    collection = temp;
-                    return;
-                }
+            if (collection.containsKey(name)) {
+                Path path = Paths.get(
+                        collection.get(name).getPath().toString(), collection
+                                .get(name).getName());
+                File file = new File(path.toString());
+                this.deleteDir(file);
+                collection.remove(name);
+                return;
             }
-            throw new IllegalStateException("Error in removeTable-meth");
         }
-
+        throw new IllegalStateException("Requested database don't exist");
     }
-
 }

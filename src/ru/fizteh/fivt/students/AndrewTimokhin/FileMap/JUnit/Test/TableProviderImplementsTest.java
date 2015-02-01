@@ -85,8 +85,8 @@ public class TableProviderImplementsTest {
 
     @Test
     public void testRemoveTableIfExist() {
-        tp.createTable("test");
-        tp.removeTable("test");
-        assertNull(tp.getTable("test"));
+        tp.createTable("testdb");
+        tp.removeTable("testdb");
+        assertNull(tp.getTable("testdb"));
     }
 }

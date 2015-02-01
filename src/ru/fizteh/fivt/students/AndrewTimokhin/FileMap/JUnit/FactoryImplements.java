@@ -15,13 +15,14 @@ public class FactoryImplements implements TableProviderFactory {
     @Override
     public TableProvider create(String dir) {
         if (dir == null) {
-            throw new IllegalArgumentException("Error in create-meth.");
+            throw new IllegalArgumentException(
+                    "Info: String representing directory is null");
         }
         try {
             return new TableProviderImplements(dir);
         } catch (IOException xcpt) {
-            System.out.println(xcpt.toString());
+            throw new RuntimeException(
+                    "Info: Target directory cannot be created or you don't have access to creating files! Try to run as administrator");
         }
-        return null;
     }
 }

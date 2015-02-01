@@ -10,6 +10,7 @@ package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,12 +21,14 @@ public class TableImplement<V> implements Table {
     private String path;
     private Map<String, String> map;
     private Map<String, String> backup;
+    public Map<String, String> current;
 
     public TableImplement(String name, String path) {
         this.path = path;
         this.name = name;
         map = new HashMap<String, String>();
         backup = new HashMap<String, String>();
+        current = new HashMap<String, String>();
     }
 
     public String getPath() {
@@ -63,29 +66,25 @@ public class TableImplement<V> implements Table {
 
     @Override
     public int size() {
-        int summ = 0;
+        int size = 0;
         if (map != null) {
-            summ += map.size();
+            size += map.size();
         }
-        return summ;
+        return size;
     }
 
     @Override
     public String get(String key) throws IllegalArgumentException,
             KeyNullAndNotFound {
         if (key == null) {
-            IllegalArgumentException exception = new IllegalArgumentException(
-                    "Error in get meth!");
-            exception.initCause(new KeyNullAndNotFound("Error!"));
-            throw exception;
+            throw new KeyNullAndNotFound("Info: Key is null");
         }
         if (map != null) {
             if (map.containsKey(key)) {
-                return (String) map.get(key);
+                return map.get(key);
             }
         }
         return null;
-
     }
 
     @Override
@@ -93,7 +92,7 @@ public class TableImplement<V> implements Table {
         String time = null;
         if (key == null || value == null) {
             throw new IllegalArgumentException(
-                    "Error in put-meth. Key or (and) value is wrong.");
+                    "Info: Key or (and) value is wrong.");
         }
         if (map != null) {
             if (map.containsKey(key)) {
@@ -108,34 +107,28 @@ public class TableImplement<V> implements Table {
     public String remove(String key) throws IllegalArgumentException {
         String time = null;
         if (key == null) {
-            throw new IllegalArgumentException(
-                    "Error in remove-meth. Key is wrong.");
+            throw new IllegalArgumentException("Info: Key is wrong.");
         }
-        if (map != null) {
+        if (map != null) { // if map is empty, then it is null
             if (map.containsKey(key)) {
                 time = (String) map.get(key);
                 map.remove(key);
             }
         }
         return time;
-
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public List<String> list() {
         Set<String> time;
         if (map != null) {
-            time = map.keySet();
-            List<String> list = new ArrayList<String>(time);
-            return list;
+            return new ArrayList<String>(map.keySet());
         }
-        return (new ArrayList<String>());
+        return new ArrayList<String>(); // if map is empty
     }
 
     public int totalChanges() {
         int counter = 0;
-
         if (backup == null && map == null) {
             return 0;
         }
@@ -146,18 +139,17 @@ public class TableImplement<V> implements Table {
             return map.size();
         }
         if (backup != null && map != null) {
-            Set<String> time = backup.keySet();
-            for (String timeKey : time) {
-
-                if (!(backup.get(timeKey).equals(map.get(timeKey)))) {
+            Set<String> backupKey = backup.keySet();
+            for (String timeKey : backupKey) {
+                if (map.containsKey(timeKey)
+                        && !(backup.get(timeKey).equals(map.get(timeKey)))) {
                     counter++;
                 } else if (!map.containsKey(timeKey)) {
                     counter++;
                 }
             }
-            time = map.keySet();
-            for (String timeKey : time) {
-
+            backupKey = map.keySet();
+            for (String timeKey : backupKey) {
                 if (!backup.containsKey(timeKey)) {
                     counter++;
                 }
@@ -168,70 +160,50 @@ public class TableImplement<V> implements Table {
 
     @Override
     public int commit() {
-        int counter = this.totalChanges();
-        if (counter != 0) {
-            try {
-
-                this.writeToDisk();
-            } catch (IOException ioexcptn) {
-                System.out.println(ioexcptn.toString());
-            }
+        try {
+            return this.writeToDisk();
+        } catch (IOException ioexcptn) {
+            throw new RuntimeException("Cannot write to the File System");
         }
-        return counter;
     }
 
-    public void writeToDisk() throws IOException {
-        int flagIfBaseExist = 0;
+    public int writeToDisk() throws IOException {
+        boolean flagIfBaseExist = false;
         Reader rd = new Reader();
-
         FactoryImplements tb = new FactoryImplements();
-        TableProviderImplements tpi = (TableProviderImplements) tb.create(path);
-
-        rd.read(tpi);
+        TableProviderImplements tableProvider = (TableProviderImplements) tb
+                .create(path);
+        rd.read(tableProvider);
         Writer writer = new Writer();
-        if (tpi.collection != null) {
-            for (int i = 0; i < tpi.collection.length; i++) {
-                if (tpi.collection[i].getName().equals(this.getName())) {
-
+        if (tableProvider.collection != null) {
+            {
+                if (tableProvider.collection.containsKey(this.getName())) {
                     {
-                        Map<String, String> tmp = new HashMap<String, String>();
-                        @SuppressWarnings("unchecked")
-                        Set<String> copy = tpi.collection[i].map.keySet();
+                        Map<String, String> tmp = new HashMap<>();
+                        Set<String> copy = tableProvider.collection.get(name).map
+                                .keySet();
                         for (String time : copy) {
-
                             tmp.put(new String(time),
-                                    new String((String) tpi.collection[i]
-                                            .getMap().get(time)));
+                                    new String(
+                                            (String) tableProvider.collection
+                                                    .get(name).map.get(time)));
                         }
                         this.backup = new HashMap<String, String>(tmp);
-                        ;
-
                     }
-
-                    tpi.collection[i] = this;
-                    flagIfBaseExist = 1;
+                    tableProvider.collection.put(this.getName(), this);
+                    flagIfBaseExist = true;
                 }
-
             }
-
         }
-        if (flagIfBaseExist == 0) {
-            tpi.createTable(this.name);
+        if (!flagIfBaseExist) {
+            tableProvider.createTable(this.name);
             this.backup = null;
         }
-        for (int i = 0; i < tpi.collection.length; i++) {
-            if (tpi.collection[i].getName().equals(this.getName())) {
-                tpi.collection[i] = this;
-            }
-
-        }
-
-        writer.write(tpi);
-        if (this.map == null) {
-            // this.commit();
-
-        }
-
+        if (tableProvider.collection.containsKey(this.getName()))
+            tableProvider.collection.put(this.getName(), this);
+        if (this.totalChanges() > 0)
+            writer.write(tableProvider);
+        return this.totalChanges();
     }
 
     @Override
