@@ -56,14 +56,14 @@ public class Writer {
     }
 
     public void write(TableProviderImplements tp) throws IOException {
-        this.deleteDirectory(new File(tp.dir));
-        File baseDir = new File(tp.dir);
+        this.deleteDirectory(new File(tp.getDir()));
+        File baseDir = new File(tp.getDir());
         baseDir.mkdir();
         if (tp.collection != null) {
             Set<String> dataBase = tp.collection.keySet();
             for (String name : dataBase) {
                 TableImplement ti = tp.collection.get(name);
-                Path pathToDb = Paths.get(tp.dir, ti.getName());
+                Path pathToDb = Paths.get(tp.getDir(), ti.getName());
                 File dataBaseDir = new File(pathToDb.toString());
                 dataBaseDir.mkdir();
                 if (ti.getMap() != null) {
@@ -72,7 +72,7 @@ public class Writer {
                     for (String keyFind : keyList) {
                         Integer dirToWrite = new Integer(abs(keyFind.hashCode()
                                 % totalSubDir));
-                        Path localPath = Paths.get(tp.dir, ti.getName(),
+                        Path localPath = Paths.get(tp.getDir(), ti.getName(),
                                 dirToWrite.toString() + dirct);
                         if (!this.checkDir(localPath.toString())) {
                             this.createDir(localPath.toString());

@@ -8,8 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -21,15 +23,21 @@ import java.util.Vector;
  */
 
 public class Reader {
-    final int totalSubDir = 16;
-    final String direct = ".dir";
-
+    static final int TOTAL_SUB_STRING = 16;
+    static final String DIRECT = ".dir";
+ private void readKeyValue(DataInputStream rd, StringBuilder string) throws IOException{
+                                       int length = rd.readInt();
+                                            for (int k = 0; k < length; k++) {
+                                                string
+                                                        .append(rd.readChar());
+                                            } 
+ };
     public void read(TableProviderImplements tp) throws IOException {
         StringBuilder keyBuilder = new StringBuilder();
         StringBuilder valueBuilder = new StringBuilder();
         int length;
-        String path = tp.dir;
-        Vector<TableImplement> tables = new Vector<TableImplement>();
+        String path = tp.getDir();
+        List<TableImplement> tables = new ArrayList<TableImplement>();
         boolean dbExist = false;
         File testDir = new File(path);
         if (testDir.list() != null) {
@@ -38,12 +46,12 @@ public class Reader {
                 File checkDir = new File(pathToFile.toString());
                 if (checkDir.isDirectory()) {
                     dbExist = true;
-                    TableImplement dataBase = new TableImplement(time, tp.dir);
+                    TableImplement dataBase = new TableImplement(time, tp.getDir());
                     tables.add(dataBase);
-                    for (int i = 0; i < totalSubDir; i++) {
+                    for (int i = 0; i < TOTAL_SUB_STRING; i++) {
                         Integer numberDir = new Integer(i);
                         Path pathToDb = Paths.get(path, time,
-                                numberDir.toString() + direct);
+                                numberDir.toString() + DIRECT);
                         File locDB = new File(pathToDb.toString());
                         if (locDB.exists()) {
                             for (String file : locDB.list()) {
@@ -54,16 +62,9 @@ public class Reader {
                                                 pathToLocalDb.toString()))) {
                                     while (true) {
                                         try {
-                                            length = rd.readInt();
-                                            for (int k = 0; k < length; k++) {
-                                                keyBuilder
-                                                        .append(rd.readChar());
-                                            }
-                                            length = rd.readInt();
-                                            for (int k = 0; k < length; k++) {
-                                                valueBuilder.append(rd
-                                                        .readChar());
-                                            }
+                                            readKeyValue(rd, keyBuilder);
+                                            readKeyValue(rd, valueBuilder); 
+                                             
                                             dataBase.getMap().put(
                                                     keyBuilder.toString(),
                                                     valueBuilder.toString());
@@ -80,7 +81,7 @@ public class Reader {
                                     }
                                 } catch (FileNotFoundException fnfe) {
                                     throw new RuntimeException(
-                                            "Info: Target directory cannot be read! Try to run as administrator");
+                                            "Target directory cannot be read! Try to run as administrator");
                                 }
                             }
                         }

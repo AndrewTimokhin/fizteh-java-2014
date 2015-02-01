@@ -16,13 +16,13 @@ public class FactoryImplements implements TableProviderFactory {
     public TableProvider create(String dir) {
         if (dir == null) {
             throw new IllegalArgumentException(
-                    "Info: String representing directory is null");
+                    "String representing directory is null");
         }
         try {
             return new TableProviderImplements(dir);
         } catch (IOException xcpt) {
             throw new RuntimeException(
-                    "Info: Target directory cannot be created or you don't have access to creating files! Try to run as administrator");
+                    "Target directory cannot be created or you don't have access to creating files! Try to run as administrator");
         }
     }
 }

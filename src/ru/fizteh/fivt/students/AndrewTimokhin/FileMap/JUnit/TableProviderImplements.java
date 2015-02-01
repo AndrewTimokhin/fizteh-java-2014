@@ -14,20 +14,9 @@ import java.util.Map;
 
 public class TableProviderImplements implements TableProvider {
 
-    public static void deleteDir(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                File f = new File(dir, children[i]);
-                deleteDir(f);
-            }
-            dir.delete();
-        } else
-            dir.delete();
-    }
-
-    protected Map<String, TableImplement> collection;
-    public final String dir;
+  
+    public Map<String, TableImplement> collection;
+    private final String dir;
 
     TableProviderImplements(String dir) throws IOException {
         this.dir = dir;
@@ -36,6 +25,18 @@ public class TableProviderImplements implements TableProvider {
         rd.read(this);
     }
 
+      public static void deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (String childName : children) {
+                File f = new File(dir, childName);
+                deleteDir(f);
+            }
+            dir.delete();
+        } else
+            dir.delete();
+    }
+      
     public void write() throws IOException {
         Writer writeToFileSystem = new Writer();
         writeToFileSystem.write(this);
@@ -45,12 +46,10 @@ public class TableProviderImplements implements TableProvider {
     public Table getTable(String name) throws IllegalArgumentException {
         if (name == null) {
             throw new IllegalArgumentException(
-                    "Info: Name of DataBase is null. Please, enter correct name");
+                    "Name of DataBase is null. Please, enter correct name");
         }
-        if (collection != null) { // if database is created now
             if (collection.containsKey(name))
                 return collection.get(name);
-        }
         return null;
     }
 
@@ -58,7 +57,7 @@ public class TableProviderImplements implements TableProvider {
     public Table createTable(String name) throws IllegalArgumentException {
         if (name == null) {
             throw new IllegalArgumentException(
-                    "Info: Name of DataBase is null. Please, enter correct name");
+                    "Name of DataBase is null. Please, enter correct name");
         }
         if (collection != null) {
             if (collection.containsKey(name))
@@ -81,7 +80,7 @@ public class TableProviderImplements implements TableProvider {
             IllegalStateException {
         if (name == null) {
             throw new IllegalArgumentException(
-                    "Info: Name of DataBase is null. Please, enter correct name");
+                    "Name of DataBase is null. Please, enter correct name");
         }
         if (collection != null) {
             if (collection.containsKey(name)) {
@@ -95,5 +94,8 @@ public class TableProviderImplements implements TableProvider {
             }
         }
         throw new IllegalStateException("Requested database don't exist");
+    }
+    public String getDir() {
+        return dir;
     }
 }

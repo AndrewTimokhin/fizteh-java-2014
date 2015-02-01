@@ -31,9 +31,9 @@ public class TableImplementTest {
 
     @Before
     public void setUp() {
-        TableProviderFactory tpv = new FactoryImplements();
+        TableProviderFactory tableProviderFactory = new FactoryImplements();
         path = tmp.newFolder("time").getAbsolutePath();
-        tableProvider = tpv.create(path);
+        tableProvider = tableProviderFactory.create(path);
         table = tableProvider.createTable("testing");
 
         FactoryImplements factory = new FactoryImplements();
@@ -184,13 +184,14 @@ public class TableImplementTest {
         assertEquals(0, table.rollback());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testRollbackNullPointer() {
         table.put("id564", "989");
         table.put("id988", "123");
         table.put("id123", "766");
         table.commit();
         table.rollback();
+        assertEquals(0, table.size());
     }
 
     @Test
@@ -248,4 +249,15 @@ public class TableImplementTest {
 
     }
 
+    
+    
+        @Test
+    public void extraCheck() throws IllegalArgumentException, KeyNullAndNotFound {
+        table.put("a", "b");
+        table.commit();
+        table.put("a", "c");
+        table.rollback();
+        assertEquals(null, table.get("a"));
+
+    }
 }

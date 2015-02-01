@@ -13,6 +13,19 @@ import java.util.Set;
  * 
  */
 public class InteractiveMode {
+    
+    static final String CREATE_COMMAND = "create";
+    static final String PUT_COMMAND = "put";
+    static final String GET_COMMAND = "get";
+    static final String REMOVE_COMMAND = "remove";
+    static final String DROP_COMMAND = "drop";
+    static final String COMMIT_COMMAND = "commit";
+    static final String ROLLBACK_COMMAND = "rollback";
+    static final String USE_COMMAND = "use";
+    static final String SIZE_COMMAND = "size";
+    static final String LIST_COMMAND = "list";
+    static final String EXIT_COMMAND = "exit";
+    
     private TableImplement table;
     final TableProviderImplements provider;
     final FactoryImplements factory;
@@ -36,7 +49,7 @@ public class InteractiveMode {
             throw new UnknownCommand(
                     "Current command was not recognized. Programm fail");
         switch (commands[0]) {
-        case "create":
+        case CREATE_COMMAND:
             if (commands.length != 2) {
                 this.invitationToRepeat();
                 break;
@@ -46,7 +59,7 @@ public class InteractiveMode {
             else
                 System.out.println("created");
             break;
-        case "put":
+        case PUT_COMMAND:
             if (commands.length != 3) {
                 this.invitationToRepeat();
                 break;
@@ -61,7 +74,7 @@ public class InteractiveMode {
                     System.out.println("*new*");
                 break;
             }
-        case "get":
+        case GET_COMMAND:
             if (commands.length != 2) {
                 this.invitationToRepeat();
                 break;
@@ -76,7 +89,7 @@ public class InteractiveMode {
                     System.out.println("*not exist*");
                 break;
             }
-        case "remove":
+        case REMOVE_COMMAND:
             if (commands.length != 2) {
                 this.invitationToRepeat();
                 break;
@@ -95,7 +108,7 @@ public class InteractiveMode {
                     System.out.println("*not removed, because not exist*");
                 break;
             }
-        case "drop":
+        case DROP_COMMAND:
             if (commands.length != 2) {
                 this.invitationToRepeat();
                 break;
@@ -109,7 +122,7 @@ public class InteractiveMode {
                 System.out.println(error);
             }
             break;
-        case "commit":
+        case COMMIT_COMMAND:
             if (commands.length != 1) {
                 this.invitationToRepeat();
                 break;
@@ -120,7 +133,7 @@ public class InteractiveMode {
                 System.out.println("No table");
             break;
 
-        case "rollback":
+        case ROLLBACK_COMMAND:
             if (commands.length != 1) {
                 this.invitationToRepeat();
                 break;
@@ -130,7 +143,7 @@ public class InteractiveMode {
             else
                 System.out.println("No table");
             break;
-        case "use":
+        case USE_COMMAND:
             if (commands.length != 2) {
                 this.invitationToRepeat();
                 break;
@@ -145,7 +158,7 @@ public class InteractiveMode {
                     System.out.println("Using");
             }
             break;
-        case "size":
+        case  SIZE_COMMAND:
             if (commands.length != 1) {
                 this.invitationToRepeat();
                 break;
@@ -159,7 +172,7 @@ public class InteractiveMode {
                 System.out.println(totalSize);
             }
             break;
-        case "list":
+        case  LIST_COMMAND:
             if (commands.length != 1) {
                 this.invitationToRepeat();
                 break;
@@ -173,7 +186,7 @@ public class InteractiveMode {
                 }
                 break;
             }
-        case "exit": {
+        case EXIT_COMMAND: {
             if (table != null)
                 table.commit();
             return false;

@@ -67,17 +67,14 @@ public class TableImplement<V> implements Table {
     @Override
     public int size() {
         int size = 0;
-        if (map != null) {
             size += map.size();
-        }
-        return size;
+         return size;
     }
 
     @Override
-    public String get(String key) throws IllegalArgumentException,
-            KeyNullAndNotFound {
+    public String get(String key) throws KeyNullAndNotFound {
         if (key == null) {
-            throw new KeyNullAndNotFound("Info: Key is null");
+            throw new KeyNullAndNotFound("Key is null");
         }
         if (map != null) {
             if (map.containsKey(key)) {
@@ -92,11 +89,11 @@ public class TableImplement<V> implements Table {
         String time = null;
         if (key == null || value == null) {
             throw new IllegalArgumentException(
-                    "Info: Key or (and) value is wrong.");
+                    "Key or (and) value is wrong.");
         }
         if (map != null) {
             if (map.containsKey(key)) {
-                time = (String) map.get(key);
+                time = map.get(key);
             }
         }
         map.put(key, value);
@@ -107,13 +104,11 @@ public class TableImplement<V> implements Table {
     public String remove(String key) throws IllegalArgumentException {
         String time = null;
         if (key == null) {
-            throw new IllegalArgumentException("Info: Key is wrong.");
+            throw new IllegalArgumentException("Key is wrong.");
         }
-        if (map != null) { // if map is empty, then it is null
             if (map.containsKey(key)) {
                 time = (String) map.get(key);
                 map.remove(key);
-            }
         }
         return time;
     }
@@ -141,10 +136,8 @@ public class TableImplement<V> implements Table {
         if (backup != null && map != null) {
             Set<String> backupKey = backup.keySet();
             for (String timeKey : backupKey) {
-                if (map.containsKey(timeKey)
-                        && !(backup.get(timeKey).equals(map.get(timeKey)))) {
-                    counter++;
-                } else if (!map.containsKey(timeKey)) {
+                if ((map.containsKey(timeKey)
+                        && !(backup.get(timeKey).equals(map.get(timeKey)))) || !map.containsKey(timeKey)) {
                     counter++;
                 }
             }
@@ -163,17 +156,17 @@ public class TableImplement<V> implements Table {
         try {
             return this.writeToDisk();
         } catch (IOException ioexcptn) {
-            throw new RuntimeException("Cannot write to the File System");
+            throw new RuntimeException(new IOException("Cannot write to the File System"));
         }
     }
 
     public int writeToDisk() throws IOException {
         boolean flagIfBaseExist = false;
-        Reader rd = new Reader();
-        FactoryImplements tb = new FactoryImplements();
-        TableProviderImplements tableProvider = (TableProviderImplements) tb
+        Reader reader = new Reader();
+        FactoryImplements factory = new FactoryImplements();
+        TableProviderImplements tableProvider = (TableProviderImplements) factory
                 .create(path);
-        rd.read(tableProvider);
+        reader.read(tableProvider);
         Writer writer = new Writer();
         if (tableProvider.collection != null) {
             {
@@ -182,11 +175,11 @@ public class TableImplement<V> implements Table {
                         Map<String, String> tmp = new HashMap<>();
                         Set<String> copy = tableProvider.collection.get(name).map
                                 .keySet();
-                        for (String time : copy) {
-                            tmp.put(new String(time),
+                        for (String copyString : copy) {
+                            tmp.put(new String(copyString),
                                     new String(
                                             (String) tableProvider.collection
-                                                    .get(name).map.get(time)));
+                                                    .get(name).map.get(copyString)));
                         }
                         this.backup = new HashMap<String, String>(tmp);
                     }
@@ -207,10 +200,13 @@ public class TableImplement<V> implements Table {
     }
 
     @Override
-    public int rollback() {
-        Map<String, String> time = new HashMap<String, String>(this.map);
+    public int rollback() throws NullPointerException{
+        Map<String, String> copyMap = new HashMap<String, String>(this.map);
+        if (this.backup!= null)
         this.map = new HashMap<String, String>(this.backup);
-        this.backup = time;
+        else
+            this.map = new HashMap<String, String>();
+        this.backup = copyMap;
         return this.commit();
     }
 }
