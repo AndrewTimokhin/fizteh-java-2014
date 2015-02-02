@@ -10,10 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * Класс @class Reader отвечает за физическое чтение данных из файловой системы.
@@ -25,13 +23,19 @@ import java.util.Vector;
 public class Reader {
     static final int TOTAL_SUB_STRING = 16;
     static final String DIRECT = ".dir";
- private void readKeyValue(DataInputStream rd, StringBuilder string) throws IOException{
-                                       int length = rd.readInt();
-                                            for (int k = 0; k < length; k++) {
-                                                string
-                                                        .append(rd.readChar());
-                                            } 
- };
+    private String directory;
+    
+    public Reader(String directory) {
+        this.directory = directory;
+    }
+    
+    private void readKeyValue(DataInputStream rd, StringBuilder string) throws IOException {
+        int length = rd.readInt();
+        for (int k = 0; k < length; k++) {
+        string
+        .append(rd.readChar());
+    }
+}
     public void read(TableProviderImplements tp) throws IOException {
         StringBuilder keyBuilder = new StringBuilder();
         StringBuilder valueBuilder = new StringBuilder();
@@ -79,9 +83,9 @@ public class Reader {
                                             break;
                                         }
                                     }
-                                } catch (FileNotFoundException fnfe) {
+                                } catch (FileNotFoundException exceptionFileNotFound) {
                                     throw new RuntimeException(
-                                            "Target directory cannot be read! Try to run as administrator");
+                                            exceptionFileNotFound);
                                 }
                             }
                         }
@@ -90,13 +94,13 @@ public class Reader {
             }
         }
         if (!dbExist) {
-            return;
+            return ;
         }
         Map<String, TableImplement> copy = new HashMap<>();
         for (TableImplement table : tables) {
             copy.put(table.getName(), table);
         }
         tp.collection = copy;
-        return;
+         return ;
     }
 }

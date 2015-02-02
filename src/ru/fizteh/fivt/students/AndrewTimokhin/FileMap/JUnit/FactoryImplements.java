@@ -20,9 +20,8 @@ public class FactoryImplements implements TableProviderFactory {
         }
         try {
             return new TableProviderImplements(dir);
-        } catch (IOException xcpt) {
-            throw new RuntimeException(
-                    "Target directory cannot be created or you don't have access to creating files! Try to run as administrator");
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
         }
     }
 }

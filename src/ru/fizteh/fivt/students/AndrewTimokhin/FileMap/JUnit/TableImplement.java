@@ -66,9 +66,7 @@ public class TableImplement<V> implements Table {
 
     @Override
     public int size() {
-        int size = 0;
-            size += map.size();
-         return size;
+         return map.size();
     }
 
     @Override
@@ -86,29 +84,29 @@ public class TableImplement<V> implements Table {
 
     @Override
     public String put(String key, String value) throws IllegalArgumentException {
-        String time = null;
+        String previousValue = null;
         if (key == null || value == null) {
             throw new IllegalArgumentException(
                     "Key or (and) value is wrong.");
         }
         if (map != null) {
             if (map.containsKey(key)) {
-                time = map.get(key);
+                previousValue = map.get(key);
             }
         }
         map.put(key, value);
-        return time;
+        return previousValue;
     }
 
     @Override
     public String remove(String key) throws IllegalArgumentException {
         String time = null;
         if (key == null) {
-            throw new IllegalArgumentException("Key is wrong.");
+            throw new IllegalArgumentException("Key shouldn't be null");
         }
-            if (map.containsKey(key)) {
-                time = (String) map.get(key);
-                map.remove(key);
+        if (map.containsKey(key)) {
+            time =  map.get(key);
+            map.remove(key);
         }
         return time;
     }
@@ -119,7 +117,7 @@ public class TableImplement<V> implements Table {
         if (map != null) {
             return new ArrayList<String>(map.keySet());
         }
-        return new ArrayList<String>(); // if map is empty
+        return new ArrayList<String>();  
     }
 
     public int totalChanges() {
@@ -156,13 +154,13 @@ public class TableImplement<V> implements Table {
         try {
             return this.writeToDisk();
         } catch (IOException ioexcptn) {
-            throw new RuntimeException(new IOException("Cannot write to the File System"));
+            throw new RuntimeException(ioexcptn);
         }
     }
 
     public int writeToDisk() throws IOException {
         boolean flagIfBaseExist = false;
-        Reader reader = new Reader();
+        Reader reader = new Reader(this.path);
         FactoryImplements factory = new FactoryImplements();
         TableProviderImplements tableProvider = (TableProviderImplements) factory
                 .create(path);

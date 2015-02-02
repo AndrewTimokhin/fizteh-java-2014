@@ -20,8 +20,8 @@ public class TableProviderImplements implements TableProvider {
 
     TableProviderImplements(String dir) throws IOException {
         this.dir = dir;
-        collection = new HashMap<>();
-        Reader rd = new Reader();
+        collection = new HashMap<String, TableImplement>();
+        Reader rd = new Reader(new String(this.dir));
         rd.read(this);
     }
 
@@ -29,8 +29,7 @@ public class TableProviderImplements implements TableProvider {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             for (String childName : children) {
-                File f = new File(dir, childName);
-                deleteDir(f);
+                deleteDir(new File(dir, childName));
             }
             dir.delete();
         } else
@@ -46,10 +45,10 @@ public class TableProviderImplements implements TableProvider {
     public Table getTable(String name) throws IllegalArgumentException {
         if (name == null) {
             throw new IllegalArgumentException(
-                    "Name of DataBase is null. Please, enter correct name");
+                    "Name of DataBase is null");
         }
-            if (collection.containsKey(name))
-                return collection.get(name);
+            if (collection.containsKey(name)) {
+                return collection.get(name); }
         return null;
     }
 
@@ -62,10 +61,8 @@ public class TableProviderImplements implements TableProvider {
         if (collection != null) {
             if (collection.containsKey(name))
                 return null;
-            {
-                collection.put(name, new TableImplement(name, dir));
+                            collection.put(name, new TableImplement(name, dir));
                 return collection.get(name);
-            }
         }
         if (collection == null) {
             collection = new HashMap<>();
@@ -95,6 +92,7 @@ public class TableProviderImplements implements TableProvider {
         }
         throw new IllegalStateException("Requested database don't exist");
     }
+    
     public String getDir() {
         return dir;
     }
