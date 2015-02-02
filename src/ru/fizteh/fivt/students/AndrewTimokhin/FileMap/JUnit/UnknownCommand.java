@@ -10,6 +10,7 @@ package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
  * @author Андрей
  */
 public class UnknownCommand extends Exception {
+
     public UnknownCommand(String description) {
         super(description);
     }

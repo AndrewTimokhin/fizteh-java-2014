@@ -2,13 +2,12 @@ package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class JUnit {
+
     public static void main(String[] args) throws IOException,
             IllegalArgumentException, KeyNullAndNotFound {
-        InteractiveMode user = new InteractiveMode("C:\\DataBase");
+        InteractiveMode user = new InteractiveMode(System.getProperty("fizteh.db.dir"));
         Scanner sc = new Scanner(System.in);
 
         try {

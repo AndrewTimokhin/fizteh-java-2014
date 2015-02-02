@@ -11,25 +11,27 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  *
  * @author Андрей
  */
-public class RemoveCommand extends Commands{
+public class RemoveCommand extends Commands {
 
-    static public boolean execute(String[] commands, TableProviderImplements tableProvider) {
-    if (commands.length != 2) {
-                Commands.invitationToRepeat();
-                return true;
-            } else if (currentTable == null) {
-                System.out.println("No table");
-                return true;
+    static public void execute(String[] commands, TableProviderImplements tableProvider) {
+        if (commands.length != 2) {
+            Commands.invitationToRepeat();
+            return;
+        } else if (currentTable == null) {
+            System.out.println("No table");
+            return;
+        } else {
+            if (commands[1] == null) {
+                System.out.println("*wrong key");
+                return;
+            }
+            String value = currentTable.remove(commands[1]);
+            if (value != null) {
+                System.out.println("*value* -> " + value);
             } else {
-                if (commands[1] == null) {
-                    System.out.println("*wrong key");
-                    return true;
-                }
-                String value = currentTable.remove(commands[1]);
-                if (value != null)
-                    System.out.println("*value* -> " + value);
-                else
-                    System.out.println("*not removed, because not exist*");
-} return true;
+                System.out.println("*not removed, because not exist*");
+            }
+        }
+        return;
     }
 }

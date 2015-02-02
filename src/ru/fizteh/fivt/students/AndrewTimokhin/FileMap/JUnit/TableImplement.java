@@ -1,12 +1,12 @@
 package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 
 /**
- * Класс TableImplement содержит логику работы таблицы базы данных. 
- * В нем переопределены все методы, которые заявлены в интерфейсе Table
- * 
+ * Класс TableImplement содержит логику работы таблицы базы данных. В нем
+ * переопределены все методы, которые заявлены в интерфейсе Table
+ *
  * @author Timokhin Andrew
  */
-
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -14,14 +14,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class TableImplement<V> implements Table {
+public class TableImplement implements Table {
 
     private String name;
     private String path;
     private Map<String, String> map;
     private Map<String, String> backup;
-    public Map<String, String> current;
+    private Map<String, String> current;
 
     public TableImplement(String name, String path) {
         this.path = path;
@@ -29,14 +31,16 @@ public class TableImplement<V> implements Table {
         map = new HashMap<String, String>();
         backup = new HashMap<String, String>();
         current = new HashMap<String, String>();
+
     }
 
     public String getPath() {
         return path;
     }
 
-    public Map<String, String> getMap() {
-        return map;
+    public void setPath(String newPath) {
+        this.path = newPath;
+        return;
     }
 
     public Map<String, String> getBackup() {
@@ -47,16 +51,8 @@ public class TableImplement<V> implements Table {
         this.backup = backup;
     }
 
-    public void setMap(Map<String, String> map) {
-        this.map = map;
-    }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     @Override
@@ -66,7 +62,7 @@ public class TableImplement<V> implements Table {
 
     @Override
     public int size() {
-         return map.size();
+        return map.size();
     }
 
     @Override
@@ -105,7 +101,7 @@ public class TableImplement<V> implements Table {
             throw new IllegalArgumentException("Key shouldn't be null");
         }
         if (map.containsKey(key)) {
-            time =  map.get(key);
+            time = map.get(key);
             map.remove(key);
         }
         return time;
@@ -117,7 +113,7 @@ public class TableImplement<V> implements Table {
         if (map != null) {
             return new ArrayList<String>(map.keySet());
         }
-        return new ArrayList<String>();  
+        return new ArrayList<String>();
     }
 
     public int totalChanges() {
@@ -147,6 +143,7 @@ public class TableImplement<V> implements Table {
             }
         }
         return counter;
+
     }
 
     @Override
@@ -158,53 +155,80 @@ public class TableImplement<V> implements Table {
         }
     }
 
-    public int writeToDisk() throws IOException {
+    public int writeToDisk() throws IOException, IllegalArgumentException {
         boolean flagIfBaseExist = false;
         Reader reader = new Reader(this.path);
         FactoryImplements factory = new FactoryImplements();
         TableProviderImplements tableProvider = (TableProviderImplements) factory
                 .create(path);
         reader.read(tableProvider);
+        copyOfMap(this.map, this.backup);
         Writer writer = new Writer();
-        if (tableProvider.collection != null) {
+        if (tableProvider.getAvailableTables() != null) {
+
             {
-                if (tableProvider.collection.containsKey(this.getName())) {
+                if (tableProvider.getAvailableTables().contains(this.getName())) {
                     {
                         Map<String, String> tmp = new HashMap<>();
-                        Set<String> copy = tableProvider.collection.get(name).map
-                                .keySet();
+                        List<String> copy = tableProvider.getTable(this.getName()).list();
                         for (String copyString : copy) {
-                            tmp.put(new String(copyString),
-                                    new String(
-                                            (String) tableProvider.collection
-                                                    .get(name).map.get(copyString)));
+                            try {
+                                tmp.put(new String(copyString),
+                                        new String(
+                                                (String) tableProvider.getTable(this.getName()).get(copyString)));
+                            } catch (KeyNullAndNotFound ex) {
+
+                            }
                         }
                         this.backup = new HashMap<String, String>(tmp);
                     }
-                    tableProvider.collection.put(this.getName(), this);
-                    flagIfBaseExist = true;
+                } else {
+                    tableProvider.createTable(this.name);
+                    this.backup = new HashMap<String, String>();
                 }
+
+                tableProvider.removeTable(this.getName());
+                tableProvider.createTable(this.getName());
+                for (String timeString : this.list()) {
+                    try {
+                        tableProvider.getTable(this.getName()).put(new String(timeString), new String(this.get(timeString)));
+                    } catch (KeyNullAndNotFound ex) {
+
+                    }
+                }
+                flagIfBaseExist = true;
             }
         }
-        if (!flagIfBaseExist) {
-            tableProvider.createTable(this.name);
-            this.backup = null;
+
+        if (this.totalChanges() > 0) {
+            try {
+                writer.write(tableProvider);
+            } catch (KeyNullAndNotFound NullKey) {
+
+            }
         }
-        if (tableProvider.collection.containsKey(this.getName()))
-            tableProvider.collection.put(this.getName(), this);
-        if (this.totalChanges() > 0)
-            writer.write(tableProvider);
         return this.totalChanges();
     }
 
     @Override
-    public int rollback() throws NullPointerException{
+    public int rollback() throws NullPointerException {
         Map<String, String> copyMap = new HashMap<String, String>(this.map);
-        if (this.backup!= null)
-        this.map = new HashMap<String, String>(this.backup);
-        else
+        if (this.backup != null) {
+            this.map = new HashMap<String, String>(this.backup);
+        } else {
             this.map = new HashMap<String, String>();
+        }
         this.backup = copyMap;
         return this.commit();
     }
+
+    private void copyOfMap(Map<String, String> from, Map<String, String> to) {
+        Map<String, String> timeMap = new HashMap<>();
+        for (String timeKey : from.keySet()) {
+            timeMap.put(new String(timeKey), new String(from.get(timeKey)));
+        }
+        to = new HashMap(timeMap);
+        return;
+    }
+
 }

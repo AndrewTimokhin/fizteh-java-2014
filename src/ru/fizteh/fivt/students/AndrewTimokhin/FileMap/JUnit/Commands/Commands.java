@@ -13,10 +13,14 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  * @author Андрей
  */
 public class Commands {
- static TableImplement currentTable;
- static public boolean execute(String[] command, TableProviderImplements table) {
- return false; //be-default    
- };
+
+    static TableImplement currentTable;
+
+    static public void execute(String[] command, TableProviderImplements table) {
+        return; //be-default    
+    }
+
+    ;
   static void invitationToRepeat() {
         System.out
                 .println("Current command was not recognized or not complete. Please, try again");

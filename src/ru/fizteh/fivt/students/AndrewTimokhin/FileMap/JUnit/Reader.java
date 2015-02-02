@@ -8,40 +8,36 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Класс @class Reader отвечает за физическое чтение данных из файловой системы.
- * 
+ *
  *
  * @author Timokhin Andrew
  */
-
 public class Reader {
+
     static final int TOTAL_SUB_STRING = 16;
     static final String DIRECT = ".dir";
-    private String directory;
-    
+    private final String directory;
+
     public Reader(String directory) {
         this.directory = directory;
     }
-    
+
     private void readKeyValue(DataInputStream rd, StringBuilder string) throws IOException {
         int length = rd.readInt();
         for (int k = 0; k < length; k++) {
-        string
-        .append(rd.readChar());
+            string
+                    .append(rd.readChar());
+        }
     }
-}
+
     public void read(TableProviderImplements tp) throws IOException {
         StringBuilder keyBuilder = new StringBuilder();
         StringBuilder valueBuilder = new StringBuilder();
         int length;
         String path = tp.getDir();
-        List<TableImplement> tables = new ArrayList<TableImplement>();
         boolean dbExist = false;
         File testDir = new File(path);
         if (testDir.list() != null) {
@@ -50,8 +46,9 @@ public class Reader {
                 File checkDir = new File(pathToFile.toString());
                 if (checkDir.isDirectory()) {
                     dbExist = true;
-                    TableImplement dataBase = new TableImplement(time, tp.getDir());
-                    tables.add(dataBase);
+                    tp.createTable(time);
+                    TableImplement dataBase = (TableImplement) tp.getTable(time);
+                    dataBase.setPath(tp.getDir());
                     for (int i = 0; i < TOTAL_SUB_STRING; i++) {
                         Integer numberDir = new Integer(i);
                         Path pathToDb = Paths.get(path, time,
@@ -64,29 +61,29 @@ public class Reader {
                                 try (DataInputStream rd = new DataInputStream(
                                         new FileInputStream(
                                                 pathToLocalDb.toString()))) {
-                                    while (true) {
-                                        try {
-                                            readKeyValue(rd, keyBuilder);
-                                            readKeyValue(rd, valueBuilder); 
-                                             
-                                            dataBase.getMap().put(
-                                                    keyBuilder.toString(),
-                                                    valueBuilder.toString());
-                                            dataBase.getBackup().put(
-                                                    keyBuilder.toString(),
-                                                    valueBuilder.toString());
-                                            keyBuilder.replace(0,
-                                                    keyBuilder.length(), "");
-                                            valueBuilder.replace(0,
-                                                    valueBuilder.length(), "");
-                                        } catch (EOFException e) {
-                                            break;
+                                            while (true) {
+                                                try {
+                                                    readKeyValue(rd, keyBuilder);
+                                                    readKeyValue(rd, valueBuilder);
+
+                                                    dataBase.put(
+                                                            keyBuilder.toString(),
+                                                            valueBuilder.toString());
+                                                    dataBase.getBackup().put(keyBuilder.toString(), valueBuilder.toString());
+                                                    keyBuilder.replace(0,
+                                                            keyBuilder.length(), "");
+                                                    valueBuilder.replace(0,
+                                                            valueBuilder.length(), "");
+                                                } catch (EOFException e) {
+                                                    rd.close();
+                                                    break;
+                                                }
+
+                                            }
+                                        } catch (FileNotFoundException exceptionFileNotFound) {
+                                            throw new RuntimeException(
+                                                    exceptionFileNotFound);
                                         }
-                                    }
-                                } catch (FileNotFoundException exceptionFileNotFound) {
-                                    throw new RuntimeException(
-                                            exceptionFileNotFound);
-                                }
                             }
                         }
                     }
@@ -94,13 +91,9 @@ public class Reader {
             }
         }
         if (!dbExist) {
-            return ;
+            return;
         }
-        Map<String, TableImplement> copy = new HashMap<>();
-        for (TableImplement table : tables) {
-            copy.put(table.getName(), table);
-        }
-        tp.collection = copy;
-         return ;
+
+        return;
     }
 }

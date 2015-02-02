@@ -11,12 +11,9 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  *
  * @author Андрей
  */
-public class ExitCommand extends Commands{
-    
-    static public boolean execute(String[] commands, TableProviderImplements tableProvider) { 
-    
-                if (currentTable != null)
-                currentTable.commit();
-            return false;
-}
+public class ExitCommand extends Commands {
+
+    static public void execute(String[] commands, TableProviderImplements tableProvider) {
+        return;
+    }
 }

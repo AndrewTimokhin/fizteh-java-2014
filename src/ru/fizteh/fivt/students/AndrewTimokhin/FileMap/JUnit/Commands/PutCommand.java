@@ -11,23 +11,23 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  *
  * @author Андрей
  */
-public class PutCommand extends Commands{
-    
-static public boolean execute(String[] commands, TableProviderImplements tableProvider) {    
-    if (commands.length != 3) {
-                Commands.invitationToRepeat();
-                return true;
-            } else if (currentTable == null) {
-                System.out.println("No table");
-                return true;
-            } else {
-                String oldValue = currentTable.put(commands[1], commands[2]);
-                if (oldValue != null)
-                    System.out.println("*old* -> " + oldValue);
-                else
-                    System.out.println("*new*");
-            }
-        return true;
- }
-}  
+public class PutCommand extends Commands {
 
+    static public void execute(String[] commands, TableProviderImplements tableProvider) {
+        if (commands.length != 3) {
+            Commands.invitationToRepeat();
+            return;
+        } else if (currentTable == null) {
+            System.out.println("No table");
+            return;
+        } else {
+            String oldValue = currentTable.put(commands[1], commands[2]);
+            if (oldValue != null) {
+                System.out.println("*old* -> " + oldValue);
+            } else {
+                System.out.println("*new*");
+            }
+        }
+        return;
+    }
+}

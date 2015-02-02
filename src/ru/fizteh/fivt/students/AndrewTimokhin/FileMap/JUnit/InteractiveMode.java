@@ -5,7 +5,6 @@
  */
 package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
 
-import java.util.Set;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Commands.CommitCommand;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Commands.CreateCommand;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Commands.DropCommand;
@@ -21,10 +20,10 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Commands.UseCommand;
 /**
  *
  * @author Timokhin Andrew
- * 
+ *
  */
 public class InteractiveMode {
-    
+
     static final String CREATE_COMMAND = "create";
     static final String PUT_COMMAND = "put";
     static final String GET_COMMAND = "get";
@@ -36,7 +35,7 @@ public class InteractiveMode {
     static final String SIZE_COMMAND = "size";
     static final String LIST_COMMAND = "list";
     static final String EXIT_COMMAND = "exit";
-    
+
     private TableImplement table;
     final private TableProviderImplements provider;
     final private FactoryImplements factory;
@@ -50,46 +49,48 @@ public class InteractiveMode {
     boolean command(String textToParser) throws UnknownCommand,
             IllegalArgumentException, KeyNullAndNotFound {
         String[] commands = textToParser.trim().split(" ");
-        if (commands.length < 1)
+        if (commands.length < 1) {
             throw new UnknownCommand(
                     "Current command was not recognized. Programm fail");
+        }
         switch (commands[0]) {
-        case CREATE_COMMAND:
-        CreateCommand.execute(commands, provider)    ;
-            break;
-        case PUT_COMMAND:
-        PutCommand.execute(commands, provider);
+            case CREATE_COMMAND:
+                CreateCommand.execute(commands, provider);
                 break;
-        case GET_COMMAND:
-        GetCommand.execute(commands, provider);     
+            case PUT_COMMAND:
+                PutCommand.execute(commands, provider);
                 break;
-        case REMOVE_COMMAND:
-        RemoveCommand.execute(commands, provider);       
+            case GET_COMMAND:
+                GetCommand.execute(commands, provider);
                 break;
-        case DROP_COMMAND:
-        DropCommand.execute(commands, provider);        
-            break;
-        case COMMIT_COMMAND:
-        CommitCommand.execute(commands, provider); 
-            break;
-         case ROLLBACK_COMMAND:
-        RollbackCommand.execute(commands, provider);  
-            break;
-        case USE_COMMAND:
-        UseCommand.execute(commands, provider);    
-            break;
-        case  SIZE_COMMAND:
-        SizeCommand.execute(commands, provider);       
-            break;
-        case  LIST_COMMAND:
-        ListCommand.execute(commands, provider);          
+            case REMOVE_COMMAND:
+                RemoveCommand.execute(commands, provider);
                 break;
-        case EXIT_COMMAND: {
-        return ExitCommand.execute(commands, provider);
-         }
-        default:
-            System.out.println("Wrong command!");
-            break;
+            case DROP_COMMAND:
+                DropCommand.execute(commands, provider);
+                break;
+            case COMMIT_COMMAND:
+                CommitCommand.execute(commands, provider);
+                break;
+            case ROLLBACK_COMMAND:
+                RollbackCommand.execute(commands, provider);
+                break;
+            case USE_COMMAND:
+                UseCommand.execute(commands, provider);
+                break;
+            case SIZE_COMMAND:
+                SizeCommand.execute(commands, provider);
+                break;
+            case LIST_COMMAND:
+                ListCommand.execute(commands, provider);
+                break;
+            case EXIT_COMMAND: {
+                ExitCommand.execute(commands, provider);
+                return false;
+            }
+            default:
+                System.out.println("Wrong command!");
+                break;
         }
         return true;
     }

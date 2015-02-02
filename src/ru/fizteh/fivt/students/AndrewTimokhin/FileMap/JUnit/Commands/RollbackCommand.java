@@ -11,17 +11,18 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  *
  * @author Андрей
  */
-public class RollbackCommand extends Commands{
+public class RollbackCommand extends Commands {
 
-    static public boolean execute(String[] commands, TableProviderImplements tableProvider) {
-    if (commands.length != 1) {
-                Commands.invitationToRepeat();
-                return true;
-            }
-            if (currentTable != null)
-                System.out.println("Total changes -> " + currentTable .rollback());
-            else
-                System.out.println("No table");
-            return true;
-}
+    static public void execute(String[] commands, TableProviderImplements tableProvider) {
+        if (commands.length != 1) {
+            Commands.invitationToRepeat();
+            return;
+        }
+        if (currentTable != null) {
+            System.out.println("Total changes -> " + currentTable.rollback());
+        } else {
+            System.out.println("No table");
+        }
+        return;
+    }
 }

@@ -166,7 +166,7 @@ public class TableImplementTest {
 
         assertEquals(0, table.commit());
     }
-    
+
     public void testCommitAndCommit() {
         table.put("id1", "1");
         table.put("id2", "2");
@@ -205,8 +205,8 @@ public class TableImplementTest {
         table.commit();
         assertEquals(2, table.rollback());
     }
-    
-     @Test
+
+    @Test
     public void testCommitCheckRollbackCheck() throws IllegalArgumentException, KeyNullAndNotFound {
         table.put("1", "11");
         table.put("2", "22");
@@ -228,7 +228,7 @@ public class TableImplementTest {
 
     }
 
-     @Test
+    @Test
     public void testCommitCheckChangesRollbackCheck() throws IllegalArgumentException, KeyNullAndNotFound {
         table.put("1", "11");
         table.put("2", "22");
@@ -249,9 +249,7 @@ public class TableImplementTest {
 
     }
 
-    
-    
-        @Test
+    @Test
     public void extraCheck() throws IllegalArgumentException, KeyNullAndNotFound {
         table.put("a", "b");
         table.commit();

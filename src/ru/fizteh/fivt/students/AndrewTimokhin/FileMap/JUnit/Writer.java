@@ -8,6 +8,7 @@ import java.util.Set;
 import static java.lang.Math.abs;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 /**
  * Класс @class Writer отвечает за физическую запись информации с на жесткий
@@ -16,8 +17,8 @@ import java.nio.file.Paths;
  *
  * @author Timokhin Andrew
  */
-
 public class Writer {
+
     final int totalSubDir = 16;
     final String dirct = ".dir";
 
@@ -55,20 +56,20 @@ public class Writer {
         }
     }
 
-    public void write(TableProviderImplements tp) throws IOException {
+    public void write(TableProviderImplements tp) throws IOException, KeyNullAndNotFound {
         this.deleteDirectory(new File(tp.getDir()));
         File baseDir = new File(tp.getDir());
         baseDir.mkdir();
-        if (tp.collection != null) {
-            Set<String> dataBase = tp.collection.keySet();
+        if (tp.getAvailableTables() != null) {
+            Set<String> dataBase = tp.getAvailableTables();
             for (String name : dataBase) {
-                TableImplement ti = tp.collection.get(name);
+                TableImplement ti = (TableImplement) tp.getTable(name);
                 Path pathToDb = Paths.get(tp.getDir(), ti.getName());
                 File dataBaseDir = new File(pathToDb.toString());
                 dataBaseDir.mkdir();
-                if (ti.getMap() != null) {
-                    Set<String> keyList;
-                    keyList = ti.getMap().keySet();
+                {
+                    ArrayList<String> keyList;
+                    keyList = (ArrayList<String>) ti.list();
                     for (String keyFind : keyList) {
                         Integer dirToWrite = new Integer(abs(keyFind.hashCode()
                                 % totalSubDir));
@@ -77,7 +78,7 @@ public class Writer {
                         if (!this.checkDir(localPath.toString())) {
                             this.createDir(localPath.toString());
                         }
-                        dirToWrite = new Integer((ti.getMap().get(keyFind)
+                        dirToWrite = new Integer((ti.get(keyFind)
                                 .hashCode()
                                 % totalSubDir % totalSubDir));
                         Path localFile = Paths.get(localPath.toString(),
@@ -92,11 +93,16 @@ public class Writer {
                                 new FileOutputStream(localFile.toString(), true));
                         outStream.writeInt(keyFind.length());
                         outStream.writeChars(keyFind);
-                        outStream.writeInt(ti.getMap().get(keyFind).toString()
-                                .length());
-                        outStream.writeChars(ti.getMap().get(keyFind)
-                                .toString());
-                        outStream.close();
+                        try {
+                            outStream.writeInt(ti.get(keyFind).toString()
+                                    .length());
+                            outStream.writeChars(ti.get(keyFind)
+                                    .toString());
+                        } catch (NullPointerException nullPointer) {
+                            throw nullPointer;
+                        } finally {
+                            outStream.close();
+                        }
                     }
 
                 }

@@ -11,21 +11,21 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  *
  * @author Андрей
  */
-public class DropCommand extends Commands{
+public class DropCommand extends Commands {
 
-    static public boolean execute(String[] commands, TableProviderImplements tableProvider) {
-    if (commands.length != 2) {
-                Commands.invitationToRepeat();
-                return true;
-            }
-            try {
-                tableProvider.removeTable(commands[1]);
-                System.out.println("dropped");
-            } catch (IllegalStateException error) {
-                System.out.println("Not exists");
-            } catch (IllegalArgumentException error) {
-                System.out.println(error);
-            }
-            return true;
-}
+    static public void execute(String[] commands, TableProviderImplements tableProvider) {
+        if (commands.length != 2) {
+            Commands.invitationToRepeat();
+            return;
+        }
+        try {
+            tableProvider.removeTable(commands[1]);
+            System.out.println("dropped");
+        } catch (IllegalStateException error) {
+            System.out.println("Not exists");
+        } catch (IllegalArgumentException error) {
+            System.out.println(error);
+        }
+        return;
+    }
 }

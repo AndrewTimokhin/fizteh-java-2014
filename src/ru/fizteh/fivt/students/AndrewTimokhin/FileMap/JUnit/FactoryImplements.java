@@ -9,7 +9,6 @@ import java.io.IOException;
  *
  * @author Timokhin Andrew
  */
-
 public class FactoryImplements implements TableProviderFactory {
 
     @Override

@@ -12,22 +12,23 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  *
  * @author Андрей
  */
-public class UseCommand extends Commands{
+public class UseCommand extends Commands {
 
-    public static boolean execute(String[] commands, TableProviderImplements tableProvider) {
-                    if (commands.length != 2) {
-                Commands.invitationToRepeat();
-                return true;
+    public static void execute(String[] commands, TableProviderImplements tableProvider) {
+        if (commands.length != 2) {
+            Commands.invitationToRepeat();
+            return;
+        }
+        currentTable = (TableImplement) tableProvider.getTable(commands[1]);
+        if (currentTable == null) {
+            System.out.println("Not exists");
+        } else {
+            if (currentTable.totalChanges() > 0) {
+                System.out.println("Need commit->" + currentTable.totalChanges());
+            } else {
+                System.out.println("Using");
             }
-            currentTable = (TableImplement) tableProvider.getTable(commands[1]);
-            if (currentTable == null)
-                System.out.println("Not exists");
-            else {
-                if (currentTable.totalChanges() > 0)
-                    System.out.println("Need commit->");
-                else
-                    System.out.println("Using");
+        }
+        return;
     }
-  return false;  
- }
 }

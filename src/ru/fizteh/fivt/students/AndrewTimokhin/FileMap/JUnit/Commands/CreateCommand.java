@@ -11,17 +11,18 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  *
  * @author Андрей
  */
-public class CreateCommand extends Commands{
+public class CreateCommand extends Commands {
 
-    static public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+    static public void execute(String[] commands, TableProviderImplements tableProvider) {
         if (commands.length != 2) {
-                Commands.invitationToRepeat();
-                return true;
-            }
-            if (tableProvider.createTable(commands[1]) == null) 
-                System.out.println("Exist!");
-            else
-                System.out.println("created");
-            return true;
+            Commands.invitationToRepeat();
+            return;
+        }
+        if (tableProvider.createTable(commands[1]) == null) {
+            System.out.println("Exist!");
+        } else {
+            System.out.println("created");
+        }
+        return;
     }
 }
