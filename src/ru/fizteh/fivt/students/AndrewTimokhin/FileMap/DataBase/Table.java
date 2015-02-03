@@ -1,4 +1,4 @@
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase;
 
 import java.util.List;
 

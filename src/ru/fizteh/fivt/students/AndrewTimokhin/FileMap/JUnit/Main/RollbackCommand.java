@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Commands;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main;
 
-import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImplements;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator.Commands;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
 
 /**
  *
@@ -13,16 +14,19 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  */
 public class RollbackCommand extends Commands {
 
-    static public void execute(String[] commands, TableProviderImplements tableProvider) {
-        if (commands.length != 1) {
-            Commands.invitationToRepeat();
-            return;
-        }
+    public RollbackCommand() {
+        super(1);
+    }
+
+    @Override
+    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+
         if (currentTable != null) {
             System.out.println("Total changes -> " + currentTable.rollback());
         } else {
             System.out.println("No table");
         }
-        return;
+        return true;
     }
+
 }

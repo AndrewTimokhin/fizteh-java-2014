@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Commands;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main;
 
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator.Commands;
 import java.util.ArrayList;
-import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.KeyNullAndNotFound;
-import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImplements;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.KeyNullAndNotFound;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
 
 /**
  *
@@ -15,13 +16,15 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  */
 public class ListCommand extends Commands {
 
-    static public void execute(String[] commands, TableProviderImplements tableProvider) {
-        if (commands.length != 1) {
-            Commands.invitationToRepeat();
-            return;
-        } else if (currentTable == null) {
+    public ListCommand() {
+        super(1);
+    }
+
+    @Override
+    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+        if (currentTable == null) {
             System.out.println("No table");
-            return;
+            return true;
         } else {
             ArrayList<String> set;
             set = (ArrayList<String>) currentTable.list();
@@ -33,6 +36,7 @@ public class ListCommand extends Commands {
                 }
             }
         }
-        return;
+        return true;
     }
+
 }

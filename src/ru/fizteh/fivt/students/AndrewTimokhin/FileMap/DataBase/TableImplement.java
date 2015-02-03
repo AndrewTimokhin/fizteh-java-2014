@@ -1,4 +1,4 @@
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase;
 
 /**
  * Класс TableImplement содержит логику работы таблицы базы данных. В нем
@@ -6,16 +6,12 @@ package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
  *
  * @author Timokhin Andrew
  */
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TableImplement implements Table {
 
@@ -176,8 +172,8 @@ public class TableImplement implements Table {
                                 tmp.put(new String(copyString),
                                         new String(
                                                 (String) tableProvider.getTable(this.getName()).get(copyString)));
-                            } catch (KeyNullAndNotFound ex) {
-
+                            } catch (KeyNullAndNotFound exception) {
+                                continue;
                             }
                         }
                         this.backup = new HashMap<String, String>(tmp);
@@ -191,9 +187,9 @@ public class TableImplement implements Table {
                 tableProvider.createTable(this.getName());
                 for (String timeString : this.list()) {
                     try {
-                        tableProvider.getTable(this.getName()).put(new String(timeString), new String(this.get(timeString)));
+                 tableProvider.getTable(this.getName()).put(new String(timeString), new String(this.get(timeString)));
                     } catch (KeyNullAndNotFound ex) {
-
+                        continue;
                     }
                 }
                 flagIfBaseExist = true;
@@ -203,8 +199,8 @@ public class TableImplement implements Table {
         if (this.totalChanges() > 0) {
             try {
                 writer.write(tableProvider);
-            } catch (KeyNullAndNotFound NullKey) {
-
+            } catch (KeyNullAndNotFound nullKey) {
+                        System.out.println(nullKey.toString());
             }
         }
         return this.totalChanges();

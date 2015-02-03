@@ -1,4 +1,4 @@
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase;
 
 @SuppressWarnings("serial")
 public class KeyNullAndNotFound extends Exception {

@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Commands;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main;
 
-import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImplements;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator.Commands;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
 
 /**
  *
@@ -13,17 +14,19 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  */
 public class RemoveCommand extends Commands {
 
-    static public void execute(String[] commands, TableProviderImplements tableProvider) {
-        if (commands.length != 2) {
-            Commands.invitationToRepeat();
-            return;
-        } else if (currentTable == null) {
+    public RemoveCommand() {
+        super(2);
+    }
+
+    @Override
+    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+        if (currentTable == null) {
             System.out.println("No table");
-            return;
+            return true;
         } else {
             if (commands[1] == null) {
                 System.out.println("*wrong key");
-                return;
+                return true;
             }
             String value = currentTable.remove(commands[1]);
             if (value != null) {
@@ -32,6 +35,7 @@ public class RemoveCommand extends Commands {
                 System.out.println("*not removed, because not exist*");
             }
         }
-        return;
+        return true;
     }
+
 }

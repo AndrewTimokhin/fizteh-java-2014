@@ -1,10 +1,9 @@
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

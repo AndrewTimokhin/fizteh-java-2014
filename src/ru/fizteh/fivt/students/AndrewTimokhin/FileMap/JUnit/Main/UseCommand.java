@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Commands;
+package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main;
 
-import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableImplement;
-import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImplements;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator.Commands;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableImplement;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
 
 /**
  *
@@ -14,11 +15,13 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.TableProviderImpleme
  */
 public class UseCommand extends Commands {
 
-    public static void execute(String[] commands, TableProviderImplements tableProvider) {
-        if (commands.length != 2) {
-            Commands.invitationToRepeat();
-            return;
-        }
+    public UseCommand() {
+        super(2);
+    }
+
+    @Override
+    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+
         currentTable = (TableImplement) tableProvider.getTable(commands[1]);
         if (currentTable == null) {
             System.out.println("Not exists");
@@ -29,6 +32,7 @@ public class UseCommand extends Commands {
                 System.out.println("Using");
             }
         }
-        return;
+        return true;
     }
+
 }
