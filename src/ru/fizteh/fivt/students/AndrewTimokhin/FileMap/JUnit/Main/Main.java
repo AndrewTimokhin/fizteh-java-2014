@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException,
             IllegalArgumentException, KeyNullAndNotFound, UnknownCommand {
-        InteractiveMode user = new InteractiveMode("C:\\DataBase", new Commands());
+        InteractiveMode user = new InteractiveMode(System.getProperty("db.file").toString(), new Commands());
         Scanner sc = new Scanner(System.in);
         System.out.print("$ ");
         try {
