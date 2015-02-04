@@ -6,10 +6,8 @@
 package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator;
 
 import java.util.Map;
-import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.FactoryImplements;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.KeyNullAndNotFound;
-import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableImplement;
-import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main.UnknowCommand;
 
 /**
  *
@@ -17,27 +15,23 @@ import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImpl
  *
  */
 public class InteractiveMode {
-    
-    private final TableProviderImplements provider;
-    private final FactoryImplements factory;
-    private TableImplement table;
-    private String currentDir;
-    private Map<String, Commands> allCommand;
 
-    public InteractiveMode(String path, Commands command) {
-        allCommand = command.getAllCommand();
-        factory = new FactoryImplements();
-        provider = (TableProviderImplements) factory.create(path);
+    private final Map<String, Commands> allCommand;
+    private final Commands fail;
+
+    public InteractiveMode(Map<String, Commands> allCommand) {
+        this.allCommand = allCommand;
+        fail = new UnknowCommand();
     }
 
-    public boolean command(String textToParser) throws UnknownCommand,
+    public Commands runCommand(String textToParser) throws UnknownCommandException,
             IllegalArgumentException, KeyNullAndNotFound {
         String[] commands = textToParser.trim().split(" ");
         if (commands.length < 1 || !allCommand.containsKey(commands[0])) {
-            System.out.println("Wrong command!");
-            return true;
+            System.out.println("Details: Wrong command!");
+            return fail;
         }
-        return allCommand.get(commands[0]).checkAndRun(commands, provider);
+        return allCommand.get(commands[0]);
 
     }
 }

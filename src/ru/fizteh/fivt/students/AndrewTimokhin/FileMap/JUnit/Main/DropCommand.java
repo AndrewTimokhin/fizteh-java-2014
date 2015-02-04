@@ -5,6 +5,7 @@
  */
 package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main;
 
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableImplement;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator.Commands;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
 
@@ -19,16 +20,17 @@ public class DropCommand extends Commands {
     }
 
     @Override
-    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+    public TableImplement execute(String[] commands, TableProviderImplements tableProvider, TableImplement currentTable) throws IllegalStateException {
+        if (invitationToRepeat(commands)) {
+            return currentTable;
+        }
         try {
             tableProvider.removeTable(commands[1]);
             System.out.println("dropped");
-        } catch (IllegalStateException error) {
-            System.out.println("Not exists");
-        } catch (IllegalArgumentException error) {
-            System.out.println(error);
+        } catch (IllegalStateException | IllegalArgumentException error) {
+            throw error;
         }
-        return true;
+        return currentTable;
     }
 
 }

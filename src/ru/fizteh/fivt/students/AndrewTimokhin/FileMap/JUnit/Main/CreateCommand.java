@@ -5,6 +5,7 @@
  */
 package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main;
 
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableImplement;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator.Commands;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
 
@@ -19,13 +20,16 @@ public class CreateCommand extends Commands {
     }
 
     @Override
-    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+    public TableImplement execute(String[] commands, TableProviderImplements tableProvider, TableImplement currentTable) {
+        if (invitationToRepeat(commands)) {
+            return currentTable;
+        }
         if (tableProvider.createTable(commands[1]) == null) {
             System.out.println("Exist!");
         } else {
             System.out.println("created");
         }
-        return true;
+        return currentTable;
     }
 
 }

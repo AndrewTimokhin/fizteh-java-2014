@@ -17,10 +17,7 @@ import java.util.ArrayList;
  *
  * @author Timokhin Andrew
  */
-public class Writer {
-
-    final int totalSubDir = 16;
-    final String dirct = ".dir";
+public class Writer implements ConstantValue, DeleteAlgorithm {
 
     boolean checkDir(String name) {
         File tmpFile = new File(name);
@@ -31,36 +28,20 @@ public class Writer {
     void createDir(String path) {
         File tmpDir = new File(path);
         tmpDir.mkdir();
-        return;
     }
 
     void createFile(String path) throws IOException {
 
         File tmpFile = new File(path);
-        File prepareToMakeDir = new File(tmpFile.getParent().toString());
+        File prepareToMakeDir = new File(tmpFile.getParent());
         prepareToMakeDir.mkdirs();
         tmpFile.createNewFile();
-        return;
-    }
-
-    public void deleteDirectory(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                File tmpFile = new File(dir, children[i]);
-                deleteDirectory(tmpFile);
-            }
-            dir.delete();
-        } else {
-            dir.delete();
-        }
     }
 
     public void write(TableProviderImplements tp) throws IOException, KeyNullAndNotFound {
         this.deleteDirectory(new File(tp.getDir()));
         File baseDir = new File(tp.getDir());
         baseDir.mkdir();
-        if (tp.getAvailableTables() != null) {
             Set<String> dataBase = tp.getAvailableTables();
             for (String name : dataBase) {
                 TableImplement ti = (TableImplement) tp.getTable(name);
@@ -72,15 +53,15 @@ public class Writer {
                     keyList = (ArrayList<String>) ti.list();
                     for (String keyFind : keyList) {
                         Integer dirToWrite = new Integer(abs(keyFind.hashCode()
-                                % totalSubDir));
+                                % TOTAL_SUB_STRING));
                         Path localPath = Paths.get(tp.getDir(), ti.getName(),
-                                dirToWrite.toString() + dirct);
+                                dirToWrite.toString() + DIRECTORY_SUFFIX);
                         if (!this.checkDir(localPath.toString())) {
                             this.createDir(localPath.toString());
                         }
                         dirToWrite = new Integer((ti.get(keyFind)
                                 .hashCode()
-                                % totalSubDir % totalSubDir));
+                                % TOTAL_SUB_STRING % TOTAL_SUB_STRING));
                         Path localFile = Paths.get(localPath.toString(),
                                 dirToWrite.toString());
                         File checkIfExist = new File(localFile.toString());
@@ -89,25 +70,20 @@ public class Writer {
 
                             this.createFile(localFile.toString());
                         }
-                        DataOutputStream outStream = new DataOutputStream(
-                                new FileOutputStream(localFile.toString(), true));
-                        outStream.writeInt(keyFind.length());
-                        outStream.writeChars(keyFind);
-                        try {
+                        try (DataOutputStream outStream = new DataOutputStream(
+                                new FileOutputStream(localFile.toString(), true))) {
+
+                            outStream.writeInt(keyFind.length());
+                            outStream.writeChars(keyFind);
+
                             outStream.writeInt(ti.get(keyFind).toString()
                                     .length());
                             outStream.writeChars(ti.get(keyFind)
                                     .toString());
-                        } catch (NullPointerException nullPointer) {
-                            throw nullPointer;
-                        } finally {
-                            outStream.close();
                         }
                     }
 
                 }
             }
-        }
-        return;
     }
 }

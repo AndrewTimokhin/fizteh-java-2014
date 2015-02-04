@@ -11,37 +11,20 @@ import java.util.Set;
 /**
  * @author Timokhin Andrew
  */
-public class TableProviderImplements implements TableProvider {
+public class TableProviderImplements implements TableProvider, DeleteAlgorithm {
 
-    private Map<String, TableImplement> collection;
+    private final Map<String, TableImplement> collection;
     private final String dir;
 
-    TableProviderImplements(String dir) throws IOException {
+    public TableProviderImplements(String dir) throws IOException {
         this.dir = dir;
-        collection = new HashMap<String, TableImplement>();
-        Reader rd = new Reader(new String(this.dir));
+        collection = new HashMap<>();
+        Reader rd = new Reader();
         rd.read(this);
     }
 
     public Set<String> getAvailableTables() {
         return collection.keySet();
-    }
-
-    public static void deleteDir(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (String childName : children) {
-                deleteDir(new File(dir, childName));
-            }
-            dir.delete();
-        } else {
-            dir.delete();
-        }
-    }
-
-    public void write() throws IOException, KeyNullAndNotFound {
-        Writer writeToFileSystem = new Writer();
-        writeToFileSystem.write(this);
     }
 
     @Override
@@ -62,19 +45,13 @@ public class TableProviderImplements implements TableProvider {
             throw new IllegalArgumentException(
                     "Name of DataBase is null. Please, enter correct name");
         }
-        if (collection != null) {
-            if (collection.containsKey(name)) {
-                return null;
-            }
-            collection.put(name, new TableImplement(name, dir));
-            return collection.get(name);
+
+        if (collection.containsKey(name)) {
+            return null;
         }
-        if (collection == null) {
-            collection = new HashMap<>();
-            collection.put(name, new TableImplement(name, dir));
-            return collection.get(name);
-        }
-        return null;
+        collection.put(name, new TableImplement(name, dir));
+        return collection.get(name);
+
     }
 
     @Override
@@ -84,16 +61,13 @@ public class TableProviderImplements implements TableProvider {
             throw new IllegalArgumentException(
                     "Name of DataBase is null. Please, enter correct name");
         }
-        if (collection != null) {
             if (collection.containsKey(name)) {
-                Path path = Paths.get(
-                        collection.get(name).getPath().toString(), collection
+                Path path = Paths.get(collection.get(name).getPath(), collection
                         .get(name).getName());
                 File file = new File(path.toString());
-                this.deleteDir(file);
+                this.deleteDirectory(file);
                 collection.remove(name);
                 return;
-            }
         }
         throw new IllegalStateException("Requested database don't exist");
     }

@@ -20,9 +20,13 @@ public class UseCommand extends Commands {
     }
 
     @Override
-    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+    public TableImplement execute(String[] commands, TableProviderImplements tableProvider, TableImplement currentTable) {
+        if (invitationToRepeat(commands)) {
+            return currentTable;
+        }
 
         currentTable = (TableImplement) tableProvider.getTable(commands[1]);
+
         if (currentTable == null) {
             System.out.println("Not exists");
         } else {
@@ -32,7 +36,7 @@ public class UseCommand extends Commands {
                 System.out.println("Using");
             }
         }
-        return true;
+        return currentTable;
     }
 
 }

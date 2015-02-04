@@ -5,6 +5,7 @@
  */
 package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main;
 
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableImplement;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator.Commands;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
 
@@ -19,12 +20,16 @@ public class CommitCommand extends Commands {
     }
 
     @Override
-    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+    public TableImplement execute(String[] commands, TableProviderImplements tableProvider, TableImplement currentTable) {
+
+        if (invitationToRepeat(commands)) {
+            return currentTable;
+        }
         if (currentTable != null) {
             System.out.println("Total changes -> " + currentTable.commit());
         } else {
             System.out.println("No table");
         }
-        return true;
+        return currentTable;
     }
 }

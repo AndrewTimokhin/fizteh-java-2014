@@ -8,6 +8,7 @@ package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator.Commands;
 import java.util.ArrayList;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.KeyNullAndNotFound;
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableImplement;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
 
 /**
@@ -21,10 +22,13 @@ public class ListCommand extends Commands {
     }
 
     @Override
-    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
+    public TableImplement execute(String[] commands, TableProviderImplements tableProvider, TableImplement currentTable) {
+        if (invitationToRepeat(commands)) {
+            return currentTable;
+        }
         if (currentTable == null) {
             System.out.println("No table");
-            return true;
+            return null;
         } else {
             ArrayList<String> set;
             set = (ArrayList<String>) currentTable.list();
@@ -36,7 +40,7 @@ public class ListCommand extends Commands {
                 }
             }
         }
-        return true;
+        return currentTable;
     }
 
 }

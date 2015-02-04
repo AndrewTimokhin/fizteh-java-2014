@@ -6,6 +6,8 @@ public interface Table {
 
     /**
      * Возвращает название базы данных.
+     *
+     * @return name representing database
      */
     String getName();
 

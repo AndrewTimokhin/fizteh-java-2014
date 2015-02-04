@@ -5,6 +5,7 @@
  */
 package ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main;
 
+import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableImplement;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Interpretator.Commands;
 import ru.fizteh.fivt.students.AndrewTimokhin.FileMap.DataBase.TableProviderImplements;
 
@@ -18,9 +19,22 @@ public class ExitCommand extends Commands {
         super(1);
     }
 
+    /**
+     * This command needed to exit.
+     *
+     * @param commands parsed user input
+     * @param tableProvider object representing current database
+     * @param currentTable current Table
+     * @return always return Exception to close, because customer wish is law
+     * @throws
+     * ru.fizteh.fivt.students.AndrewTimokhin.FileMap.JUnit.Main.ExitException
+     */
     @Override
-    public boolean execute(String[] commands, TableProviderImplements tableProvider) {
-        return false;
+    public TableImplement execute(String[] commands, TableProviderImplements tableProvider, TableImplement currentTable) throws ExitException {
+        if (invitationToRepeat(commands)) {
+            return currentTable;
+        }
+        throw new ExitException("Programm ended");
     }
 
 }
