@@ -53,6 +53,11 @@ public class TableImplementTest {
         assertTrue("testing".equals(table.getName()));
     }
 
+    @Test(expected = KeyNullAndNotFound.class)
+    public void testGetNullKey() throws KeyNullAndNotFound {
+        table.get(null);
+    }
+
     /**
      * Тесты на size method
      */
